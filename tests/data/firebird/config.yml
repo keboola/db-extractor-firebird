@@ -1,0 +1,15 @@
+parameters:
+    db:
+        driver: firebird
+        dbname: firebird:dbname=firebird:/usr/local/firebird/examples/empbuild/employee.fdb
+        user: SYSDBA
+        password: masterkey
+
+    tables:
+        -
+            name: employee
+            query: "SELECT * from employee"
+            outputTable: in.c-main.employee
+            incremental: false
+            primaryKey: EMP_NO
+            enabled: true
