@@ -1,0 +1,10 @@
+sudo: required
+
+services:
+  - docker
+
+before_install:
+  - docker-compose -v
+
+script:
+  - docker-compose run -e FIREBIRD_DB_DBNAME=$FIREBIRD_DB_DBNAME -e FIREBIRD_DB_USER=$FIREBIRD_DB_USER -e FIREBIRD_DB_PASSWORD=$FIREBIRD_DB_PASSWORD app
