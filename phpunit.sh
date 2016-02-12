@@ -2,4 +2,6 @@
 
 env;
 
-./vendor/bin/phpunit --verbose --debug
+composer install -n;
+
+./vendor/bin/phpunit --verbose --debug;
