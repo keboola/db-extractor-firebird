@@ -49,11 +49,16 @@ class FirebirdTest extends ExtractorTest
     public function testRun()
     {
         $result = $this->app->run();
+        $expectedCsvFile = $this->dataDir . '/firebird/' . $result['imported'][0] . '.csv';
+        $expectedManifestFile = $this->dataDir . '/firebird/' . $result['imported'][0] . '.csv.manifest';
+        $outputCsvFile = $this->dataDir . '/out/tables/' . $result['imported'][0] . '.csv';
+        $outputManifestFile = $this->dataDir . '/out/tables/' . $result['imported'][0] . '.csv.manifest';
 
         $this->assertEquals('ok', $result['status']);
-
-        $this->assertFileExists($this->dataDir . '/out/tables/' . $result['imported'][0] . '.csv');
-        $this->assertFileExists($this->dataDir . '/out/tables/' . $result['imported'][0] . '.csv.manifest');
+        $this->assertFileExists($outputCsvFile);
+        $this->assertFileExists($outputManifestFile);
+        $this->assertEquals(file_get_contents($expectedCsvFile), file_get_contents($outputCsvFile));
+        $this->assertEquals(file_get_contents($expectedManifestFile), file_get_contents($outputManifestFile));
     }
 
 }
