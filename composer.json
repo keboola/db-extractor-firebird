@@ -1,5 +1,5 @@
 {
-    "name": "keboola/db-extractor-impala",
+    "name": "keboola/db-extractor-firebird",
     "require": {
         "keboola/db-extractor-common": "^1.0"
     },
