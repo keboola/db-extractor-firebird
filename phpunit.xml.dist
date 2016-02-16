@@ -10,6 +10,10 @@
          syntaxCheck="false"
          bootstrap="vendor/keboola/db-extractor-common/bootstrap.php">
 
+    <php>
+        <const name="ROOT_PATH" value="./"/>
+    </php>
+
     <testsuite name="DB Writer Test Suite">
         <directory>tests</directory>
     </testsuite>

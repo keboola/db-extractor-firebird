@@ -4,8 +4,8 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "cc51d89a084cb56897b382e5db38d199",
-    "content-hash": "d5dbf4bf167ea66446ed0c0dc4057dc9",
+    "hash": "86fca296e0fc0c0c3fa1a2f1434bc22e",
+    "content-hash": "395988b318b1cfc1f67777c14cecc3a3",
     "packages": [
         {
             "name": "keboola/csv",
@@ -40,16 +40,16 @@
         },
         {
             "name": "keboola/db-extractor-common",
-            "version": "0.0.3",
+            "version": "1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/keboola/db-extractor-common.git",
-                "reference": "2db2e0a2727fd1f785360d3bdd23fd2e4de016b7"
+                "reference": "d9798e73918a6ef9798c3f184a7ce10896f66809"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/keboola/db-extractor-common/zipball/2db2e0a2727fd1f785360d3bdd23fd2e4de016b7",
-                "reference": "2db2e0a2727fd1f785360d3bdd23fd2e4de016b7",
+                "url": "https://api.github.com/repos/keboola/db-extractor-common/zipball/d9798e73918a6ef9798c3f184a7ce10896f66809",
+                "reference": "d9798e73918a6ef9798c3f184a7ce10896f66809",
                 "shasum": ""
             },
             "require": {
@@ -75,7 +75,7 @@
                     "email": "miro@keboola.com"
                 }
             ],
-            "time": "2016-02-12 13:58:58"
+            "time": "2016-02-16 12:26:58"
         },
         {
             "name": "monolog/monolog",
@@ -394,22 +394,24 @@
         },
         {
             "name": "phpspec/prophecy",
-            "version": "v1.5.0",
+            "version": "v1.6.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpspec/prophecy.git",
-                "reference": "4745ded9307786b730d7a60df5cb5a6c43cf95f7"
+                "reference": "3c91bdf81797d725b14cb62906f9a4ce44235972"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/4745ded9307786b730d7a60df5cb5a6c43cf95f7",
-                "reference": "4745ded9307786b730d7a60df5cb5a6c43cf95f7",
+                "url": "https://api.github.com/repos/phpspec/prophecy/zipball/3c91bdf81797d725b14cb62906f9a4ce44235972",
+                "reference": "3c91bdf81797d725b14cb62906f9a4ce44235972",
                 "shasum": ""
             },
             "require": {
                 "doctrine/instantiator": "^1.0.2",
+                "php": "^5.3|^7.0",
                 "phpdocumentor/reflection-docblock": "~2.0",
-                "sebastian/comparator": "~1.1"
+                "sebastian/comparator": "~1.1",
+                "sebastian/recursion-context": "~1.0"
             },
             "require-dev": {
                 "phpspec/phpspec": "~2.0"
@@ -417,7 +419,7 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "1.4.x-dev"
+                    "dev-master": "1.5.x-dev"
                 }
             },
             "autoload": {
@@ -450,7 +452,7 @@
                 "spy",
                 "stub"
             ],
-            "time": "2015-08-13 10:07:40"
+            "time": "2016-02-15 07:46:21"
         },
         {
             "name": "phpunit/php-code-coverage",

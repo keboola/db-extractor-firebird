@@ -5,12 +5,12 @@ use Keboola\DbExtractor\Exception\ApplicationException;
 use Keboola\DbExtractor\Exception\UserException;
 use Symfony\Component\Yaml\Yaml;
 
+define('APP_NAME', 'ex-db-firebird');
+define('ROOT_PATH', __DIR__);
+
 require_once(dirname(__FILE__) . "/vendor/keboola/db-extractor-common/bootstrap.php");
 
-define('APP_NAME', 'ex-db-firebird');
-
 try {
-
     $arguments = getopt("d::", ["data::"]);
     if (!isset($arguments["data"])) {
         throw new UserException('Data folder not set.');

@@ -8,7 +8,6 @@
 
 namespace Keboola\DbExtractor\Extractor;
 
-
 use Keboola\DbExtractor\Exception\UserException;
 
 class Firebird extends Extractor
@@ -28,15 +27,12 @@ class Firebird extends Extractor
             }
         }
 
-//        $port = isset($params['port']) ? $params['port'] : '21050';
-
         $dsn = sprintf(
             "firebird:dbname=%s",
             $params['dbname']
         );
 
         $pdo = new \PDO($dsn, $params['user'], $params['password'], $options);
-//        $pdo->setAttribute(\PDO::ATTR_EMULATE_PREPARES, true);
 
         return $pdo;
     }

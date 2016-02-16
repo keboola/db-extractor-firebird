@@ -2,4 +2,6 @@
 
 composer install -n;
 
-./vendor/bin/phpunit --verbose --debug;
+export ROOT_PATH="/code";
+
+./vendor/bin/phpunit;
