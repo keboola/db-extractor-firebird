@@ -20,13 +20,14 @@ class FirebirdTest extends ExtractorTest
     public function setUp()
     {
         define('APP_NAME', 'ex-db-firebird');
-        $this->app = new Application($this->getConfig('firebird'));
+        $this->app = new Application($this->getConfig());
     }
 
-    protected function getConfig($driver)
+    protected function getConfig($driver = 'firebird')
     {
         $config = Yaml::parse(file_get_contents($this->dataDir . '/' .$driver . '/config.yml'));
         $config['dataDir'] = $this->dataDir;
+        $config['extractor_class'] = 'Firebird';
 
         if (false === getenv(strtoupper($driver) . '_DB_USER')) {
             throw new \Exception("DB_USER envrionment variable must be set.");
