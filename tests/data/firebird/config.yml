@@ -1,6 +1,5 @@
 parameters:
     db:
-        driver: firebird
         dbname: firebird:dbname=firebird:/usr/local/firebird/examples/empbuild/employee.fdb
         user: SYSDBA
         password: masterkey

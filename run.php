@@ -17,10 +17,11 @@ try {
     }
 
     $config = Yaml::parse(file_get_contents($arguments["data"] . "/config.yml"));
-    $config['dataDir'] = $arguments['data'];
+    $config['data_dir'] = $arguments['data'];
     $config['extractor_class'] = 'Firebird';
 
     $app = new Application($config);
+    $app->setConfigDefinition(new FirebirdConfigDefinition());
     $app->run();
 
 } catch(UserException $e) {
