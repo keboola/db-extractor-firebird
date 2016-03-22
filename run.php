@@ -1,6 +1,7 @@
 <?php
 
 use Keboola\DbExtractor\Application;
+use Keboola\DbExtractor\Configuration\FirebirdConfigDefinition;
 use Keboola\DbExtractor\Exception\ApplicationException;
 use Keboola\DbExtractor\Exception\UserException;
 use Symfony\Component\Yaml\Yaml;

@@ -1,13 +1,14 @@
 <?php
-use Keboola\DbExtractor\Configuration\ConfigDefinition;
-use Symfony\Component\Config\Definition\Builder\TreeBuilder;
-
 /**
  * Created by PhpStorm.
  * User: miroslavcillik
  * Date: 22/03/16
  * Time: 12:47
  */
+namespace Keboola\DbExtractor\Configuration;
+
+use Symfony\Component\Config\Definition\Builder\TreeBuilder;
+
 class FirebirdConfigDefinition extends ConfigDefinition
 {
     /** @inherit */

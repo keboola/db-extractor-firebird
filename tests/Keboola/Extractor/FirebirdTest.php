@@ -9,6 +9,7 @@
 
 namespace Keboola\DbExtractor;
 
+use Keboola\DbExtractor\Configuration\FirebirdConfigDefinition;
 use Keboola\DbExtractor\Test\ExtractorTest;
 use Symfony\Component\Yaml\Yaml;
 
@@ -21,12 +22,13 @@ class FirebirdTest extends ExtractorTest
     {
         define('APP_NAME', 'ex-db-firebird');
         $this->app = new Application($this->getConfig());
+        $this->app->setConfigDefinition(new FirebirdConfigDefinition());
     }
 
     protected function getConfig($driver = 'firebird')
     {
         $config = Yaml::parse(file_get_contents($this->dataDir . '/' .$driver . '/config.yml'));
-        $config['dataDir'] = $this->dataDir;
+        $config['data_dir'] = $this->dataDir;
         $config['extractor_class'] = 'Firebird';
 
         if (false === getenv(strtoupper($driver) . '_DB_USER')) {
