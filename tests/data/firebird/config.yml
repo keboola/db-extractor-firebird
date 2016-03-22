@@ -6,6 +6,7 @@ parameters:
 
     tables:
         -
+            id: 0
             name: employee
             query: "SELECT * from employee"
             outputTable: in.c-main.employee
