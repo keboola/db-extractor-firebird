@@ -42,7 +42,6 @@ class FirebirdConfigDefinition extends ConfigDefinition
                     ->end()
                 ->end()
                 ->arrayNode('tables')
-                    ->isRequired()
                     ->prototype('array')
                         ->children()
                             ->integerNode('id')

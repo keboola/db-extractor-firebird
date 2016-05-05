@@ -40,16 +40,16 @@
         },
         {
             "name": "keboola/db-extractor-common",
-            "version": "3.0.4",
+            "version": "3.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/keboola/db-extractor-common.git",
-                "reference": "03be0900ff00a52c8837b82d03e6ca3db75088f5"
+                "reference": "4baeb458e40aa6d998f4721629929e06085e07d2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/keboola/db-extractor-common/zipball/03be0900ff00a52c8837b82d03e6ca3db75088f5",
-                "reference": "03be0900ff00a52c8837b82d03e6ca3db75088f5",
+                "url": "https://api.github.com/repos/keboola/db-extractor-common/zipball/4baeb458e40aa6d998f4721629929e06085e07d2",
+                "reference": "4baeb458e40aa6d998f4721629929e06085e07d2",
                 "shasum": ""
             },
             "require": {
@@ -77,7 +77,7 @@
                     "email": "miro@keboola.com"
                 }
             ],
-            "time": "2016-04-28 12:17:34"
+            "time": "2016-05-05 14:30:22"
         },
         {
             "name": "monolog/monolog",

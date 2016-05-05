@@ -42,4 +42,8 @@ class Firebird extends Extractor
         return $this->db;
     }
 
+    public function testConnection()
+    {
+        $this->db->query('select 1 from rdb$database');
+    }
 }

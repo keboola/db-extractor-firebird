@@ -20,7 +20,9 @@ class FirebirdTest extends ExtractorTest
 
     public function setUp()
     {
-        define('APP_NAME', 'ex-db-firebird');
+        if (!defined('APP_NAME')) {
+            define('APP_NAME', 'ex-db-firebird');
+        }
         $this->app = new Application($this->getConfig());
         $this->app->setConfigDefinition(new FirebirdConfigDefinition());
     }
@@ -64,4 +66,14 @@ class FirebirdTest extends ExtractorTest
         $this->assertEquals(file_get_contents($expectedManifestFile), file_get_contents($outputManifestFile));
     }
 
+    public function testTestConnection()
+    {
+        $config = $this->getConfig();
+        $config['action'] = 'testConnection';
+        $app = new Application($config);
+        $app->setConfigDefinition(new FirebirdConfigDefinition());
+
+        $result = $app->run();
+        $this->assertEquals('ok', $result['status']);
+    }
 }

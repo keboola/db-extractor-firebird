@@ -23,7 +23,7 @@ try {
 
     $app = new Application($config);
     $app->setConfigDefinition(new FirebirdConfigDefinition());
-    $app->run();
+    echo json_encode($app->run());
 
 } catch(UserException $e) {
 
