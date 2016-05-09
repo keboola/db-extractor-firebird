@@ -1,6 +1,6 @@
 parameters:
     db:
-        dbname: firebird:dbname=firebird:/usr/local/firebird/examples/empbuild/employee.fdb
+        dbname: firebird:/usr/local/firebird/examples/empbuild/employee.fdb
         user: SYSDBA
         password: masterkey
 
