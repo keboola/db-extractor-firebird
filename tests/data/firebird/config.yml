@@ -11,5 +11,6 @@ parameters:
             query: "SELECT * from employee"
             outputTable: in.c-main.employee
             incremental: false
-            primaryKey: EMP_NO
+            primaryKey:
+              - EMP_NO
             enabled: true
