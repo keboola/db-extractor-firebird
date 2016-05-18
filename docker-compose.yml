@@ -8,6 +8,10 @@ app:
   stdin_open: true
   links:
     - firebird
+  environment:
+    FIREBIRD_DB_DBNAME: firebird:/usr/local/firebird/examples/empbuild/employee.fdb
+    FIREBIRD_DB_USER: SYSDBA
+    FIREBIRD_DB_PASSWORD: masterkey
 
 firebird:
   image: jacobalberty/firebird
