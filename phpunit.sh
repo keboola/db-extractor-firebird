@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-composer update -n;
+composer install -n;
 
 export ROOT_PATH="/code";
 

@@ -3,7 +3,7 @@ app:
   volumes:
       - .:/code
   working_dir: /code
-  entrypoint: "./phpunit.sh"
+  command: "./phpunit.sh"
   tty: true
   stdin_open: true
   links:
@@ -11,7 +11,9 @@ app:
   environment:
     FIREBIRD_DB_DBNAME: firebird:/usr/local/firebird/examples/empbuild/employee.fdb
     FIREBIRD_DB_USER: SYSDBA
-    FIREBIRD_DB_PASSWORD: masterkey
+    FIREBIRD_DB_PASSWORD: pass
 
 firebird:
-  image: jacobalberty/firebird
+  image: jacobalberty/firebird:2.5-sc
+  environment:
+    ISC_PASSWORD: pass
