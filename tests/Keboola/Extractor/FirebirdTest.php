@@ -1,12 +1,5 @@
 <?php
 
-/**
- * Created by PhpStorm.
- * User: miroslavcillik
- * Date: 10/12/15
- * Time: 14:25
- */
-
 namespace Keboola\DbExtractor;
 
 use Keboola\DbExtractor\Configuration\FirebirdConfigDefinition;
@@ -29,7 +22,7 @@ class FirebirdTest extends ExtractorTest
 
     protected function getConfig($driver = 'firebird')
     {
-        $config = Yaml::parse(file_get_contents($this->dataDir . '/' .$driver . '/config.yml'));
+        $config = Yaml::parse(file_get_contents($this->dataDir . '/' . $driver . '/config.yml'));
         $config['parameters']['data_dir'] = $this->dataDir;
         $config['parameters']['extractor_class'] = 'Firebird';
 
@@ -75,5 +68,36 @@ class FirebirdTest extends ExtractorTest
 
         $result = $app->run();
         $this->assertEquals('success', $result['status']);
+    }
+
+    public function testSSHConnection(): void
+    {
+        $config = $this->getConfig();
+        $config['action'] = 'testConnection';
+        $config['parameters']['db']['ssh'] = [
+            'enabled' => true,
+            'keys' => [
+                '#private' => $this->getFirebirdPrivateKey(),
+                'public' => $this->getEnv('firebird', 'DB_SSH_KEY_PUBLIC'),
+            ],
+            'user' => 'root',
+            'sshHost' => 'sshproxy',
+            'remoteHost' => 'firebird',
+            'remotePort' => $this->getEnv('firebird', 'DB_PORT'),
+        ];
+        unset($config['parameters']['tables']);
+        var_dump($config);
+        $app = new Application($config);
+        $app->setConfigDefinition(new FirebirdConfigDefinition());
+
+        $result = $app->run();
+        $this->assertArrayHasKey('status', $result);
+        $this->assertEquals('success', $result['status']);
+    }
+
+    public function getFirebirdPrivateKey()
+    {
+        // docker-compose .env file does not support new lines in variables so we have to modify the key https://github.com/moby/moby/issues/12997
+        return str_replace('"', '', str_replace('\n', "\n", $this->getEnv('firebird', 'DB_SSH_KEY_PRIVATE')));
     }
 }
