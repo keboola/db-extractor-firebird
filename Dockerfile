@@ -8,7 +8,8 @@ ENV COMPOSER_PROCESS_TIMEOUT 3600
 RUN apt-get update && apt-get install -y \
         git \
         unzip \
-        firebird-dev\
+        ssh \
+        firebird-dev \
    --no-install-recommends && rm -r /var/lib/apt/lists/*
 
 RUN docker-php-ext-install pdo_firebird && \
