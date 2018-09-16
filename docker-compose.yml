@@ -3,20 +3,45 @@ services:
   app:
     build: .
     image: keboola/ex-db-firebird
-    volumes:
-        - ./:/code
     working_dir: /code
     command: "./phpunit.sh"
-    tty: true
-    stdin_open: true
+    env_file:
+      - ssh-keys.env
     environment:
       FIREBIRD_DB_DBNAME: firebird:/usr/local/firebird/examples/empbuild/employee.fdb
       FIREBIRD_DB_USER: SYSDBA
       FIREBIRD_DB_PASSWORD: pass
     links:
       - firebird
+      - sshproxy
+
+  dev:
+    image: keboola/ex-db-firebird
+    volumes:
+      - ./:/code
+    working_dir: /code
+    command: "./phpunit.sh"
+    env_file:
+      - ssh-keys.env
+    environment:
+      FIREBIRD_DB_DBNAME: firebird:/usr/local/firebird/examples/empbuild/employee.fdb
+      FIREBIRD_DB_USER: SYSDBA
+      FIREBIRD_DB_PASSWORD: pass
+    links:
+      - firebird
+      - sshproxy
 
   firebird:
     image: jacobalberty/firebird:2.5-sc
     environment:
       ISC_PASSWORD: pass
+
+  sshproxy:
+    build: ./tests/env/sshproxy
+    volumes:
+        - ./tests/env/sshproxy:/code
+    working_dir: /code
+    ports:
+      - "2222:22"
+    links:
+      - firebird
