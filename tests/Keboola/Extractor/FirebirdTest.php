@@ -86,7 +86,7 @@ class FirebirdTest extends ExtractorTest
             'remotePort' => $this->getEnv('firebird', 'DB_PORT'),
         ];
         unset($config['parameters']['tables']);
-        var_dump($config);
+        
         $app = new Application($config);
         $app->setConfigDefinition(new FirebirdConfigDefinition());
 
