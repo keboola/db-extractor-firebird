@@ -12,6 +12,15 @@ use Keboola\DbExtractor\Exception\UserException;
 
 class Firebird extends Extractor
 {
+    public function createSshTunnel($dbConfig)
+    {
+        if (!isset($dbConfig['host'])) {
+            $dbConfig['host'] = $dbConfig['dbname'];
+            $dbConfig['port'] = 3050;
+        }
+        return parent::createSshTunnel($dbConfig);
+    }
+
     public function createConnection($params)
     {
         // convert errors to PDOExceptions
