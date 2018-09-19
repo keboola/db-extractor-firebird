@@ -1,10 +1,21 @@
-#VERSION 1.0.0
-FROM keboola/base-php56
-MAINTAINER Miro Cillik <miro@keboola.com>
+FROM php:7.1-cli
 
-# Install dependencies
-RUN yum -y --enablerepo=epel,remi,remi-php56 install php-devel
-RUN yum -y --enablerepo=epel,remi,remi-php56 install php-interbase
+ARG DEBIAN_FRONTEND=noninteractive
+ARG COMPOSER_FLAGS="--prefer-dist --no-interaction"
+ENV COMPOSER_ALLOW_SUPERUSER=1
+ENV COMPOSER_PROCESS_TIMEOUT 3600
+
+RUN apt-get update && apt-get install -y \
+        git \
+        unzip \
+        ssh \
+        firebird-dev \
+   --no-install-recommends && rm -r /var/lib/apt/lists/*
+
+RUN docker-php-ext-install pdo_firebird && \
+    docker-php-ext-enable pdo_firebird
+
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin/ --filename=composer
 
 ADD . /code
 WORKDIR /code

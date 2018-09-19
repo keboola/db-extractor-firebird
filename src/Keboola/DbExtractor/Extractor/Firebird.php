@@ -12,6 +12,20 @@ use Keboola\DbExtractor\Exception\UserException;
 
 class Firebird extends Extractor
 {
+    private const DEFAULT_FIREBIRD_PORT = 3050;
+
+    public function createSshTunnel($dbConfig)
+    {
+        $connectionParts = explode(':', $dbConfig['dbname']);
+        if (count($connectionParts) < 1) {
+            throw new UserException("Invalid configuration for ssh tunnel");
+        }
+        $dbConfig['host'] = $connectionParts[0];
+        $dbConfig['port'] = self::DEFAULT_FIREBIRD_PORT;
+
+        return parent::createSshTunnel($dbConfig);
+    }
+
     public function createConnection($params)
     {
         // convert errors to PDOExceptions
