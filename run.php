@@ -25,6 +25,9 @@ try {
 
     $app = new Application($config);
     $app->setConfigDefinition(new FirebirdConfigDefinition());
+    if ($app['action'] !== 'run') {
+        $app['logger']->setHandlers([new NullHandler(Logger::INFO)]);
+    }
     echo json_encode($app->run());
 
 } catch(UserException $e) {
