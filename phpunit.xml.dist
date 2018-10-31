@@ -14,8 +14,11 @@
         <const name="ROOT_PATH" value="./"/>
     </php>
 
-    <testsuite name="DB Writer Test Suite">
-        <directory>tests</directory>
+    <testsuite name="FirebirdTests">
+        <file>tests/Keboola/DbExtractor/FirebirdTest.php</file>
     </testsuite>
 
+    <testsuite name="RunTests">
+        <file>tests/Keboola/DbExtractor/RunTest.php</file>
+    </testsuite>
 </phpunit>

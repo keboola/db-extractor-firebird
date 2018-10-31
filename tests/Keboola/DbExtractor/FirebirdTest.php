@@ -6,6 +6,7 @@ use Keboola\DbExtractor\Configuration\FirebirdConfigDefinition;
 use Keboola\DbExtractor\Test\ExtractorTest;
 use Symfony\Component\Yaml\Yaml;
 
+
 class FirebirdTest extends ExtractorTest
 {
     /** @var Application */
@@ -75,7 +76,7 @@ class FirebirdTest extends ExtractorTest
             'sshHost' => 'sshproxy',
             'remoteHost' => 'firebird',
             'remotePort' => $this->getEnv('firebird', 'DB_PORT'),
-            'localPort' => '33337'
+            'localPort' => '33335'
         ];
 
         $app = new Application($config);

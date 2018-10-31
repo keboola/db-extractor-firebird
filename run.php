@@ -4,6 +4,8 @@ use Keboola\DbExtractor\Application;
 use Keboola\DbExtractor\Configuration\FirebirdConfigDefinition;
 use Keboola\DbExtractor\Exception\ApplicationException;
 use Keboola\DbExtractor\Exception\UserException;
+use Keboola\DbExtractor\Logger;
+use Monolog\Handler\NullHandler;
 use Symfony\Component\Yaml\Yaml;
 
 define('APP_NAME', 'ex-db-firebird');
@@ -11,7 +13,7 @@ define('ROOT_PATH', __DIR__);
 
 require_once(dirname(__FILE__) . "/vendor/keboola/db-extractor-common/bootstrap.php");
 
-$logger = new \Keboola\DbExtractor\Logger(APP_NAME);
+$logger = new Logger(APP_NAME);
 
 try {
     $arguments = getopt("d::", ["data::"]);
@@ -25,6 +27,9 @@ try {
 
     $app = new Application($config);
     $app->setConfigDefinition(new FirebirdConfigDefinition());
+    if ($app['action'] !== 'run') {
+        $app['logger']->setHandlers([new NullHandler(Logger::INFO)]);
+    }
     echo json_encode($app->run());
 
 } catch(UserException $e) {

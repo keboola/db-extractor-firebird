@@ -4,4 +4,5 @@ composer install -n;
 
 export ROOT_PATH="/code";
 
-./vendor/bin/phpunit;
+./vendor/bin/phpunit --testsuite RunTests;
+./vendor/bin/phpunit --testsuite FirebirdTests;
