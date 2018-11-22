@@ -1,4 +1,1 @@
-destination: in.c-main.employee
-incremental: false
-primary_key:
-    - EMP_NO
+{"destination":"in.c-main.employee","incremental":false,"primary_key":["EMP_NO"]}

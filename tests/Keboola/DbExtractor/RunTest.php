@@ -11,30 +11,6 @@ class RunTest extends ExtractorTest
 {
     public const ROOT_PATH = __DIR__ . '/../../..';
 
-    protected function getConfig($driver)
-    {
-        $config = Yaml::parse(file_get_contents($this->dataDir . '/' . $driver . '/config.yml'));
-        $config['parameters']['data_dir'] = $this->dataDir;
-        $config['parameters']['extractor_class'] = 'Firebird';
-
-        if (false === getenv(strtoupper($driver) . '_DB_USER')) {
-            throw new \Exception("DB_USER envrionment variable must be set.");
-        }
-
-        if (false === getenv(strtoupper($driver) . '_DB_PASSWORD')) {
-            throw new \Exception("DB_PASSWORD envrionment variable must be set.");
-        }
-
-        $config['parameters']['db']['user'] = getenv(strtoupper($driver) . '_DB_USER');
-        $config['parameters']['db']['password'] = getenv(strtoupper($driver) . '_DB_PASSWORD');
-
-        if (false !== getenv(strtoupper($driver) . '_DB_DBNAME')) {
-            $config['parameters']['db']['dbname'] = getenv(strtoupper($driver) . '_DB_DBNAME');
-        }
-
-        return $config;
-    }
-
     public function testTestConnectionAction(): void
     {
         $config = $this->getConfig('firebird');
