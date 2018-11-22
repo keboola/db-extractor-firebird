@@ -26,7 +26,7 @@ class Firebird extends Extractor
         return parent::createSshTunnel($dbConfig);
     }
 
-    public function createConnection($params)
+    public function createConnection(array $params)
     {
         // convert errors to PDOExceptions
         $options = [
