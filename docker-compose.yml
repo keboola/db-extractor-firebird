@@ -4,7 +4,7 @@ services:
     build: .
     image: keboola/ex-db-firebird
     working_dir: /code
-    command: "./phpunit.sh"
+    command: composer ci
     env_file:
       - ssh-keys.env
     environment:
@@ -20,7 +20,7 @@ services:
     volumes:
       - ./:/code
     working_dir: /code
-    command: "./phpunit.sh"
+    command: composer ci
     env_file:
       - ssh-keys.env
     environment:
