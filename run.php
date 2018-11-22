@@ -1,6 +1,6 @@
 <?php
 
-use Keboola\DbExtractor\Application;
+use Keboola\DbExtractor\FirebirdApplication;
 use Keboola\DbExtractor\Configuration\FirebirdConfigDefinition;
 use Keboola\DbExtractor\Exception\ApplicationException;
 use Keboola\DbExtractor\Exception\UserException;
@@ -26,11 +26,8 @@ try {
         throw new UserException("Could not find a valid configuration file.");
     }
 
-    $config['parameters']['data_dir'] = $arguments['data'];
-    $config['parameters']['extractor_class'] = 'Firebird';
+    $app = new FirebirdApplication($config, $logger, [], $arguments['data']);
 
-    $app = new Application($config, $logger);
-    $app->setConfigDefinition(new FirebirdConfigDefinition());
     if ($app['action'] !== 'run') {
         $app['logger']->setHandlers([new NullHandler(Logger::INFO)]);
     }
