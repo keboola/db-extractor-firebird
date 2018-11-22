@@ -14,7 +14,7 @@ class Firebird extends Extractor
 {
     private const DEFAULT_FIREBIRD_PORT = 3050;
 
-    public function createSshTunnel($dbConfig)
+    public function createSshTunnel(array $dbConfig): array
     {
         $connectionParts = explode(':', $dbConfig['dbname']);
         if (count($connectionParts) < 1) {
@@ -59,5 +59,15 @@ class Firebird extends Extractor
     public function testConnection()
     {
         $this->db->query('select 1 from rdb$database');
+    }
+
+    public function getTables(?array $tables = null): array
+    {
+        throw new UserException("This component does not yet support the getTables method");
+    }
+
+    public function simpleQuery(array $table, array $columns = array()): string
+    {
+        throw new UserException("This component does not yet support simple queries");
     }
 }
