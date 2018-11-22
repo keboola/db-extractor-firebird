@@ -8,12 +8,9 @@ use Keboola\DbExtractor\Logger;
 use Monolog\Handler\NullHandler;
 use Symfony\Component\Yaml\Yaml;
 
-define('APP_NAME', 'ex-db-firebird');
-define('ROOT_PATH', __DIR__);
+require_once(__DIR__ . "/vendor/autoload.php");
 
-require_once(dirname(__FILE__) . "/vendor/keboola/db-extractor-common/bootstrap.php");
-
-$logger = new Logger(APP_NAME);
+$logger = new Logger('ex-db-firebird');
 
 try {
     $arguments = getopt("d::", ["data::"]);
@@ -32,7 +29,7 @@ try {
     $config['parameters']['data_dir'] = $arguments['data'];
     $config['parameters']['extractor_class'] = 'Firebird';
 
-    $app = new Application($config);
+    $app = new Application($config, $logger);
     $app->setConfigDefinition(new FirebirdConfigDefinition());
     if ($app['action'] !== 'run') {
         $app['logger']->setHandlers([new NullHandler(Logger::INFO)]);
