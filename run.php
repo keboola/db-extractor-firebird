@@ -21,7 +21,14 @@ try {
         throw new UserException('Data folder not set.');
     }
 
-    $config = Yaml::parse(file_get_contents($arguments["data"] . "/config.yml"));
+    if (file_exists($arguments["data"] . "/config.yml")) {
+        $config = Yaml::parse(file_get_contents($arguments["data"] . "/config.yml"));
+    } else if (file_exists($arguments["data"] . "/config.json")) {
+        $config = json_decode(file_get_contents($arguments["data"] . "/config.yml"), true);
+    } else {
+        throw new UserException("Could not find a valid configuration file.");
+    }
+
     $config['parameters']['data_dir'] = $arguments['data'];
     $config['parameters']['extractor_class'] = 'Firebird';
 
@@ -38,7 +45,7 @@ try {
 } catch(ApplicationException $e) {
     $logger->log('error', $e->getMessage(), (array) $e->getData());
     exit($e->getCode() > 1 ? $e->getCode(): 2);
-} catch(\Exception $e) {
+} catch(\Throwable $e) {
     $logger->log('error', $e->getMessage(), [
         'errFile' => $e->getFile(),
         'errLine' => $e->getLine(),
