@@ -27,7 +27,7 @@
     },
     "scripts": {
         "firebirdTests": "./vendor/bin/phpunit --testsuite FirebirdTests",
-        "runTests": "./vendor/bin/phpunit --testsuite runTests",
+        "runTests": "./vendor/bin/phpunit --testsuite RunTests",
         "build": [
             "@firebirdTests",
             "@runTests"
