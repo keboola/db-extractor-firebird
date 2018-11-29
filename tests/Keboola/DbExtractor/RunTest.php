@@ -35,7 +35,7 @@ class RunTest extends FirebirdBaseTest
         $config['action'] = 'testConnection';
         $this->replaceConfig($config, $configFormat);
 
-        $process = new Process('php ' . ROOT_PATH . '/run.php --data=' . $this->dataDir);
+        $process = new Process('php ' . self::ROOT_PATH . '/run.php --data=' . $this->dataDir);
         $process->setTimeout(300);
         $process->run();
 
@@ -52,7 +52,7 @@ class RunTest extends FirebirdBaseTest
         $config = $this->getConfig(self::DRIVER, $configFormat);
         $this->replaceConfig($config, $configFormat);
 
-        $process = new Process('php ' . ROOT_PATH . '/run.php --data=' . $this->dataDir);
+        $process = new Process('php ' . self::ROOT_PATH . '/run.php --data=' . $this->dataDir);
         $process->setTimeout(300);
         $process->run();
 
@@ -67,18 +67,18 @@ class RunTest extends FirebirdBaseTest
             'enabled' => true,
             'keys' => [
                 '#private' => $this->getPrivateKey(self::DRIVER),
-                'public' => $this->getEnv('firebird', 'DB_SSH_KEY_PUBLIC'),
+                'public' => $this->getEnv(self::DRIVER, 'DB_SSH_KEY_PUBLIC'),
             ],
             'user' => 'root',
             'sshHost' => 'sshproxy',
             'remoteHost' => 'firebird',
-            'remotePort' => $this->getEnv('firebird', 'DB_PORT'),
+            'remotePort' => '3050',
             'localPort' => '33338'
         ];
         $config['action'] = 'testConnection';
         $this->replaceConfig($config, self::CONFIG_FORMAT_JSON);
 
-        $process = new Process('php ' . ROOT_PATH . '/run.php --data=' . $this->dataDir);
+        $process = new Process('php ' . self::ROOT_PATH . '/run.php --data=' . $this->dataDir);
         $process->setTimeout(300);
         $process->run();
 
