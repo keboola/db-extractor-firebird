@@ -1,0 +1,22 @@
+{
+  "parameters": {
+    "db": {
+      "dbname": "firebird:/usr/local/firebird/examples/empbuild/employee.fdb",
+      "user": "SYSDBA",
+      "password": "masterkey"
+    },
+    "tables": [
+      {
+        "id": 0,
+        "name": "employee",
+        "query": "SELECT * FROM employee",
+        "outputTable": "in.c-main.employee",
+        "incremental": false,
+        "primaryKey": [
+          "EMP_NO"
+        ],
+        "enabled": true
+      }
+    ]
+  }
+}

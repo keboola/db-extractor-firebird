@@ -1,60 +1,21 @@
 <?php
 
-namespace Keboola\DbExtractor;
+namespace Keboola\DbExtractor\Tests;
 
 use Keboola\DbExtractor\Configuration\FirebirdConfigDefinition;
-use Keboola\DbExtractor\Test\ExtractorTest;
-use Symfony\Component\Yaml\Yaml;
 
-
-class FirebirdTest extends ExtractorTest
+class FirebirdTest extends FirebirdBaseTest
 {
-    /** @var Application */
-    protected $app;
-
-    public function setUp()
+    /**
+     * @dataProvider configTypeProvider
+     */
+    public function testRun(string $configFormat): void
     {
-        if (!defined('APP_NAME')) {
-            define('APP_NAME', 'ex-db-firebird');
-        }
-        $this->app = new Application($this->getConfig());
-        $this->app->setConfigDefinition(new FirebirdConfigDefinition());
-
-        // clean the output directory
-        @array_map('unlink', glob($this->dataDir . "/out/tables/*.*"));
-    }
-
-    protected function getConfig($driver = 'firebird')
-    {
-        $config = Yaml::parse(file_get_contents($this->dataDir . '/' . $driver . '/config.yml'));
-        $config['parameters']['data_dir'] = $this->dataDir;
-        $config['parameters']['extractor_class'] = 'Firebird';
-
-        if (false === getenv(strtoupper($driver) . '_DB_USER')) {
-            throw new \Exception("DB_USER envrionment variable must be set.");
-        }
-
-        if (false === getenv(strtoupper($driver) . '_DB_PASSWORD')) {
-            throw new \Exception("DB_PASSWORD envrionment variable must be set.");
-        }
-
-        $config['parameters']['db']['user'] = getenv(strtoupper($driver) . '_DB_USER');
-        $config['parameters']['db']['password'] = getenv(strtoupper($driver) . '_DB_PASSWORD');
-
-        if (false !== getenv(strtoupper($driver) . '_DB_DBNAME')) {
-            $config['parameters']['db']['dbname'] = getenv(strtoupper($driver) . '_DB_DBNAME');
-        }
-
-        return $config;
-    }
-
-    public function testRun(): void
-    {
-        $result = $this->app->run();
-        $expectedCsvFile = ROOT_PATH . '/tests/data/firebird/' . $result['imported'][0] . '.csv';
-        $expectedManifestFile = ROOT_PATH . '/tests/data/firebird/' . $result['imported'][0] . '.csv.manifest';
-        $outputCsvFile = $this->dataDir . '/out/tables/' . $result['imported'][0] . '.csv';
-        $outputManifestFile = $this->dataDir . '/out/tables/' . $result['imported'][0] . '.csv.manifest';
+        $result = ($this->makeApplication($this->getConfig(self::DRIVER, $configFormat)))->run();
+        $expectedCsvFile = $this->dataDir . '/firebird/' . $result['imported'][0]['outputTable'] . '.csv';
+        $expectedManifestFile = $this->dataDir . '/firebird/' . $result['imported'][0]['outputTable'] . '.csv.manifest';
+        $outputCsvFile = $this->dataDir . '/out/tables/' . $result['imported'][0]['outputTable'] . '.csv';
+        $outputManifestFile = $this->dataDir . '/out/tables/' . $result['imported'][0]['outputTable'] . '.csv.manifest';
 
         $this->assertEquals('success', $result['status']);
         $this->assertFileExists($outputCsvFile);
@@ -65,29 +26,28 @@ class FirebirdTest extends ExtractorTest
 
     public function testSSHRun(): void
     {
-        $config = $this->getConfig();
+        $config = $this->getConfig(self::DRIVER, self::CONFIG_FORMAT_JSON);
         $config['parameters']['db']['ssh'] = [
             'enabled' => true,
             'keys' => [
-                '#private' => $this->getFirebirdPrivateKey(),
-                'public' => $this->getEnv('firebird', 'DB_SSH_KEY_PUBLIC'),
+                '#private' => $this->getPrivateKey(self::DRIVER),
+                'public' => $this->getEnv(self::DRIVER, 'DB_SSH_KEY_PUBLIC'),
             ],
             'user' => 'root',
             'sshHost' => 'sshproxy',
             'remoteHost' => 'firebird',
-            'remotePort' => $this->getEnv('firebird', 'DB_PORT'),
+            'remotePort' => '3050',
             'localPort' => '33335'
         ];
 
-        $app = new Application($config);
-        $app->setConfigDefinition(new FirebirdConfigDefinition());
+        $app = $this->makeApplication($config);
 
         $result = $app->run();
 
-        $expectedCsvFile = ROOT_PATH . '/tests/data/firebird/' . $result['imported'][0] . '.csv';
-        $expectedManifestFile = ROOT_PATH . '/tests/data/firebird/' . $result['imported'][0] . '.csv.manifest';
-        $outputCsvFile = $this->dataDir . '/out/tables/' . $result['imported'][0] . '.csv';
-        $outputManifestFile = $this->dataDir . '/out/tables/' . $result['imported'][0] . '.csv.manifest';
+        $expectedCsvFile = $this->dataDir . '/firebird/' . $result['imported'][0]['outputTable'] . '.csv';
+        $expectedManifestFile = $this->dataDir . '/firebird/' . $result['imported'][0]['outputTable'] . '.csv.manifest';
+        $outputCsvFile = $this->dataDir . '/out/tables/' . $result['imported'][0]['outputTable'] . '.csv';
+        $outputManifestFile = $this->dataDir . '/out/tables/' . $result['imported'][0]['outputTable'] . '.csv.manifest';
 
         $this->assertEquals('success', $result['status']);
         $this->assertFileExists($outputCsvFile);
@@ -96,12 +56,14 @@ class FirebirdTest extends ExtractorTest
         $this->assertEquals(file_get_contents($expectedManifestFile), file_get_contents($outputManifestFile));
     }
 
-    public function testTestConnection(): void
+    /**
+     * @dataProvider configTypeProvider
+     */
+    public function testTestConnection(string $configFormat): void
     {
-        $config = $this->getConfig();
+        $config = $this->getConfig(self::DRIVER, $configFormat);
         $config['action'] = 'testConnection';
-        $app = new Application($config);
-        $app->setConfigDefinition(new FirebirdConfigDefinition());
+        $app = $this->makeApplication($config);
 
         $result = $app->run();
         $this->assertEquals('success', $result['status']);
@@ -109,32 +71,25 @@ class FirebirdTest extends ExtractorTest
 
     public function testSSHConnection(): void
     {
-        $config = $this->getConfig();
+        $config = $this->getConfig(self::DRIVER, self::CONFIG_FORMAT_JSON);
         $config['action'] = 'testConnection';
         $config['parameters']['db']['ssh'] = [
             'enabled' => true,
             'keys' => [
-                '#private' => $this->getFirebirdPrivateKey(),
-                'public' => $this->getEnv('firebird', 'DB_SSH_KEY_PUBLIC'),
+                '#private' => $this->getPrivateKey(self::DRIVER),
+                'public' => $this->getEnv(self::DRIVER, 'DB_SSH_KEY_PUBLIC'),
             ],
             'user' => 'root',
             'sshHost' => 'sshproxy',
             'remoteHost' => 'firebird',
-            'remotePort' => $this->getEnv('firebird', 'DB_PORT'),
+            'remotePort' => '3050',
         ];
         unset($config['parameters']['tables']);
 
-        $app = new Application($config);
-        $app->setConfigDefinition(new FirebirdConfigDefinition());
+        $app = $this->makeApplication($config);
 
         $result = $app->run();
         $this->assertArrayHasKey('status', $result);
         $this->assertEquals('success', $result['status']);
-    }
-
-    public function getFirebirdPrivateKey(): string
-    {
-        // docker-compose .env file does not support new lines in variables so we have to modify the key https://github.com/moby/moby/issues/12997
-        return str_replace('"', '', str_replace('\n', "\n", $this->getEnv('firebird', 'DB_SSH_KEY_PRIVATE')));
     }
 }
