@@ -24,12 +24,9 @@ class FirebirdTest extends FirebirdBaseTest
         $this->assertEquals(file_get_contents($expectedManifestFile), file_get_contents($outputManifestFile));
     }
 
-    /**
-     * @dataProvider configTypeProvider
-     */
-    public function testSSHRun(string $configFormat): void
+    public function testSSHRun(): void
     {
-        $config = $this->getConfig(self::DRIVER, $configFormat);
+        $config = $this->getConfig(self::DRIVER, self::CONFIG_FORMAT_JSON);
         $config['parameters']['db']['ssh'] = [
             'enabled' => true,
             'keys' => [
@@ -72,12 +69,9 @@ class FirebirdTest extends FirebirdBaseTest
         $this->assertEquals('success', $result['status']);
     }
 
-    /**
-     * @dataProvider configTypeProvider
-     */
-    public function testSSHConnection(string $configFormat): void
+    public function testSSHConnection(): void
     {
-        $config = $this->getConfig(self::DRIVER, $configFormat);
+        $config = $this->getConfig(self::DRIVER, self::CONFIG_FORMAT_JSON);
         $config['action'] = 'testConnection';
         $config['parameters']['db']['ssh'] = [
             'enabled' => true,
@@ -93,7 +87,6 @@ class FirebirdTest extends FirebirdBaseTest
         unset($config['parameters']['tables']);
 
         $app = $this->makeApplication($config);
-        $app->setConfigDefinition(new FirebirdConfigDefinition());
 
         $result = $app->run();
         $this->assertArrayHasKey('status', $result);
