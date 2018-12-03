@@ -21,7 +21,7 @@ try {
     if (file_exists($arguments["data"] . "/config.yml")) {
         $config = Yaml::parse(file_get_contents($arguments["data"] . "/config.yml"));
     } else if (file_exists($arguments["data"] . "/config.json")) {
-        $config = json_decode(file_get_contents($arguments["data"] . "/config.yml"), true);
+        $config = json_decode(file_get_contents($arguments["data"] . "/config.json"), true);
     } else {
         throw new UserException("Could not find a valid configuration file.");
     }
