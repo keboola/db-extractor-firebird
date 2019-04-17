@@ -1,10 +1,6 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: miroslavcillik
- * Date: 10/02/16
- * Time: 17:49
- */
+
+declare(strict_types=1);
 
 namespace Keboola\DbExtractor\Extractor;
 
@@ -18,7 +14,7 @@ class Firebird extends Extractor
     {
         $connectionParts = explode(':', $dbConfig['dbname']);
         if (count($connectionParts) < 1) {
-            throw new UserException("Invalid configuration for ssh tunnel");
+            throw new UserException('Invalid configuration for ssh tunnel');
         }
         $dbConfig['host'] = $connectionParts[0];
         $dbConfig['port'] = self::DEFAULT_FIREBIRD_PORT;
@@ -26,23 +22,23 @@ class Firebird extends Extractor
         return parent::createSshTunnel($dbConfig);
     }
 
-    public function createConnection(array $params)
+    public function createConnection(array $params): \PDO
     {
         // convert errors to PDOExceptions
         $options = [
             \PDO::ATTR_ERRMODE => \PDO::ERRMODE_EXCEPTION,
-            \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC
+            \PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
         ];
 
         // check params
         foreach (['dbname', 'user', 'password'] as $r) {
             if (!isset($params[$r])) {
-                throw new UserException(sprintf("Parameter %s is missing.", $r));
+                throw new UserException(sprintf('Parameter %s is missing.', $r));
             }
         }
 
         $dsn = sprintf(
-            "firebird:dbname=%s",
+            'firebird:dbname=%s',
             $params['dbname']
         );
 
@@ -51,23 +47,23 @@ class Firebird extends Extractor
         return $pdo;
     }
 
-    public function getConnection()
+    public function getConnection(): \PDO
     {
         return $this->db;
     }
 
-    public function testConnection()
+    public function testConnection(): void
     {
         $this->db->query('select 1 from rdb$database');
     }
 
     public function getTables(?array $tables = null): array
     {
-        throw new UserException("This component does not yet support the getTables method");
+        throw new UserException('This component does not yet support the getTables method');
     }
 
     public function simpleQuery(array $table, array $columns = array()): string
     {
-        throw new UserException("This component does not yet support simple queries");
+        throw new UserException('This component does not yet support simple queries');
     }
 }

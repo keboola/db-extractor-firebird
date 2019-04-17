@@ -1,2 +1,4 @@
 parameters:
+    excludes_analyse:
+        - ./src/Keboola/DbExtractor/Configuration/FirebirdConfigDefinition.php
     ignoreErrors:

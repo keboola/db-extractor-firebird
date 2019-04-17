@@ -26,7 +26,7 @@ try {
         throw new UserException("Could not find a valid configuration file.");
     }
 
-    $app = new FirebirdApplication($config, $logger, [], $arguments['data']);
+    $app = new FirebirdApplication($config, $arguments['data'], $logger);
 
     if ($app['action'] !== 'run') {
         $app['logger']->setHandlers([new NullHandler(Logger::INFO)]);

@@ -1,18 +1,14 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: miroslavcillik
- * Date: 22/03/16
- * Time: 12:47
- */
+
+declare(strict_types=1);
+
 namespace Keboola\DbExtractor\Configuration;
 
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 
 class FirebirdConfigDefinition extends ConfigDefinition
 {
-    /** @inherit */
-    public function getConfigTreeBuilder(): \Symfony\Component\Config\Definition\Builder\TreeBuilder
+    public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder();
         $rootNode = $treeBuilder->root('parameters');
@@ -42,7 +38,7 @@ class FirebirdConfigDefinition extends ConfigDefinition
                     ->end()
                 ->end()
                 ->arrayNode('tables')
-                    ->prototype('array')
+                    ->arrayPrototype()
                         ->children()
                             ->integerNode('id')
                                 ->isRequired()
@@ -76,10 +72,8 @@ class FirebirdConfigDefinition extends ConfigDefinition
                         ->end()
                     ->end()
                 ->end()
-            ->end()
-        ;
+            ->end();
 
         return $treeBuilder;
     }
-
 }
