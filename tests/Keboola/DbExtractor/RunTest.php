@@ -1,11 +1,10 @@
 <?php
 
+declare(strict_types=1);
 
-namespace Keboola\DbExtractor;
+namespace Keboola\DbExtractor\Tests;
 
 use Keboola\DbExtractor\Exception\UserException;
-use Keboola\DbExtractor\Test\ExtractorTest;
-use Keboola\DbExtractor\Tests\FirebirdBaseTest;
 use Symfony\Component\Process\Process;
 use Symfony\Component\Yaml\Yaml;
 
@@ -19,11 +18,13 @@ class RunTest extends FirebirdBaseTest
         @unlink($this->dataDir . '/config.json');
         if ($configFormat === self::CONFIG_FORMAT_YAML) {
             file_put_contents($this->dataDir . '/config.yml', Yaml::dump($config));
-        } else if ($configFormat === self::CONFIG_FORMAT_JSON) {
-            file_put_contents($this->dataDir . '/config.json', json_encode($config));
-        } else {
-            throw new UserException("invalid config format given to replace config");
+            return;
         }
+        if ($configFormat === self::CONFIG_FORMAT_JSON) {
+            file_put_contents($this->dataDir . '/config.json', json_encode($config));
+            return;
+        }
+        throw new UserException('invalid config format given to replace config');
     }
 
     /**
@@ -35,12 +36,12 @@ class RunTest extends FirebirdBaseTest
         $config['action'] = 'testConnection';
         $this->replaceConfig($config, $configFormat);
 
-        $process = new Process('php ' . self::ROOT_PATH . '/run.php --data=' . $this->dataDir);
+        $process = new Process(['php', self::ROOT_PATH . '/run.php', '--data=' . $this->dataDir]);
         $process->setTimeout(300);
         $process->run();
 
         $this->assertEquals(0, $process->getExitCode());
-        $this->assertEquals("", $process->getErrorOutput());
+        $this->assertEquals('', $process->getErrorOutput());
         $this->assertJson($process->getOutput());
     }
 
@@ -52,12 +53,12 @@ class RunTest extends FirebirdBaseTest
         $config = $this->getConfig(self::DRIVER, $configFormat);
         $this->replaceConfig($config, $configFormat);
 
-        $process = new Process('php ' . self::ROOT_PATH . '/run.php --data=' . $this->dataDir);
+        $process = new Process(['php', self::ROOT_PATH . '/run.php', '--data=' . $this->dataDir]);
         $process->setTimeout(300);
         $process->run();
 
         $this->assertEquals(0, $process->getExitCode());
-        $this->assertEquals("", $process->getErrorOutput());
+        $this->assertEquals('', $process->getErrorOutput());
     }
 
     public function testSshTestConnection(): void
@@ -73,17 +74,17 @@ class RunTest extends FirebirdBaseTest
             'sshHost' => 'sshproxy',
             'remoteHost' => 'firebird',
             'remotePort' => '3050',
-            'localPort' => '33338'
+            'localPort' => '33338',
         ];
         $config['action'] = 'testConnection';
         $this->replaceConfig($config, self::CONFIG_FORMAT_JSON);
 
-        $process = new Process('php ' . self::ROOT_PATH . '/run.php --data=' . $this->dataDir);
+        $process = new Process(['php', self::ROOT_PATH . '/run.php', '--data=' . $this->dataDir]);
         $process->setTimeout(300);
         $process->run();
 
         $this->assertEquals(0, $process->getExitCode());
-        $this->assertEquals("", $process->getErrorOutput());
+        $this->assertEquals('', $process->getErrorOutput());
         $this->assertJson($process->getOutput());
     }
 }

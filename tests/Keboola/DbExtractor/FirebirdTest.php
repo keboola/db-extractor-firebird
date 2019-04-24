@@ -1,8 +1,8 @@
 <?php
 
-namespace Keboola\DbExtractor\Tests;
+declare(strict_types=1);
 
-use Keboola\DbExtractor\Configuration\FirebirdConfigDefinition;
+namespace Keboola\DbExtractor\Tests;
 
 class FirebirdTest extends FirebirdBaseTest
 {
@@ -37,7 +37,7 @@ class FirebirdTest extends FirebirdBaseTest
             'sshHost' => 'sshproxy',
             'remoteHost' => 'firebird',
             'remotePort' => '3050',
-            'localPort' => '33335'
+            'localPort' => '33335',
         ];
 
         $app = $this->makeApplication($config);
