@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keboola\DbExtractor\Configuration;
 
+use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 
 class FirebirdConfigDefinition extends ConfigDefinition
@@ -11,6 +12,8 @@ class FirebirdConfigDefinition extends ConfigDefinition
     public function getConfigTreeBuilder(): TreeBuilder
     {
         $treeBuilder = new TreeBuilder();
+
+        /** @var ArrayNodeDefinition $rootNode */
         $rootNode = $treeBuilder->root('parameters');
 
         $rootNode

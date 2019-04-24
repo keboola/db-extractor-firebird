@@ -1,4 +1,3 @@
 parameters:
-    excludes_analyse:
-        - ./src/Keboola/DbExtractor/Configuration/FirebirdConfigDefinition.php
     ignoreErrors:
+        - '#Cannot call method scalarNode\(\) on Symfony\\Component\\Config\\Definition\\Builder\\NodeParentInterface\|null.#'
