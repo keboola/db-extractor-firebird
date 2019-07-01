@@ -5,8 +5,6 @@ services:
     image: keboola/ex-db-firebird
     working_dir: /code
     command: composer ci
-    env_file:
-      - ssh-keys.env
     environment:
       FIREBIRD_DB_DBNAME: firebird:/usr/local/firebird/examples/empbuild/employee.fdb
       FIREBIRD_DB_USER: SYSDBA
@@ -21,8 +19,6 @@ services:
       - ./:/code
     working_dir: /code
     command: composer ci
-    env_file:
-      - ssh-keys.env
     environment:
       FIREBIRD_DB_DBNAME: firebird:/usr/local/firebird/examples/empbuild/employee.fdb
       FIREBIRD_DB_USER: SYSDBA
@@ -37,6 +33,7 @@ services:
       ISC_PASSWORD: pass
 
   sshproxy:
+    image: db-ex-firebird-sshproxy
     build: ./tests/env/sshproxy
     volumes:
         - ./tests/env/sshproxy:/code

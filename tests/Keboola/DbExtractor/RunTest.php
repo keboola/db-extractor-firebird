@@ -67,8 +67,8 @@ class RunTest extends FirebirdBaseTest
         $config['parameters']['db']['ssh'] = [
             'enabled' => true,
             'keys' => [
-                '#private' => $this->getPrivateKey(self::DRIVER),
-                'public' => $this->getEnv(self::DRIVER, 'DB_SSH_KEY_PUBLIC'),
+                '#private' => $this->getPrivateKey(),
+                'public' => $this->getPublicKey(),
             ],
             'user' => 'root',
             'sshHost' => 'sshproxy',
