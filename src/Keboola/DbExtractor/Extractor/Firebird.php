@@ -5,21 +5,22 @@ declare(strict_types=1);
 namespace Keboola\DbExtractor\Extractor;
 
 use Keboola\DbExtractor\Exception\UserException;
+use Keboola\DbExtractorLogger\Logger;
 
 class Firebird extends Extractor
 {
     private const DEFAULT_FIREBIRD_PORT = 3050;
 
-    public function createSshTunnel(array $dbConfig): array
+    public function __construct(array $parameters, array $state = [], ?Logger $logger = null)
     {
-        $connectionParts = explode(':', $dbConfig['dbname']);
+        $connectionParts = explode(':', $parameters['db']['dbname']);
         if (count($connectionParts) < 1) {
             throw new UserException('Invalid configuration for ssh tunnel');
         }
-        $dbConfig['host'] = $connectionParts[0];
-        $dbConfig['port'] = self::DEFAULT_FIREBIRD_PORT;
+        $parameters['db']['host'] = $connectionParts[0];
+        $parameters['db']['port'] = self::DEFAULT_FIREBIRD_PORT;
 
-        return parent::createSshTunnel($dbConfig);
+        parent::__construct($parameters, $state, $logger);
     }
 
     public function createConnection(array $params): \PDO

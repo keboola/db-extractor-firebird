@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Keboola\DbExtractor\Tests;
 
 use Keboola\DbExtractor\FirebirdApplication;
-use Keboola\DbExtractor\Logger;
+use Keboola\DbExtractorLogger\Logger;
 use Keboola\DbExtractor\Test\ExtractorTest;
 use Symfony\Component\Yaml\Yaml;
 
@@ -22,7 +22,7 @@ abstract class FirebirdBaseTest extends ExtractorTest
         $this->logger = new Logger('firebird-tests');
 
         // clean the output directory
-        @array_map('unlink', glob($this->dataDir . '/out/tables/*.*'));
+        @array_map('unlink', (array) glob($this->dataDir . '/out/tables/*.*'));
     }
 
     protected function getConfig(string $driver = self::DRIVER, string $format = self::CONFIG_FORMAT_YAML): array
@@ -74,5 +74,10 @@ abstract class FirebirdBaseTest extends ExtractorTest
             [self::CONFIG_FORMAT_YAML],
             [self::CONFIG_FORMAT_JSON],
         ];
+    }
+
+    public function getPrivateKey(string $driver): string
+    {
+        return str_replace('"', '', str_replace('\n', "\n", $this->getEnv($driver, 'DB_SSH_KEY_PRIVATE')));
     }
 }
