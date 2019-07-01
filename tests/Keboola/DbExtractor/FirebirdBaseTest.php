@@ -61,11 +61,14 @@ abstract class FirebirdBaseTest extends ExtractorTest
         return new FirebirdApplication($config, $this->dataDir, $this->logger);
     }
 
-    public function getFirebirdPrivateKey(): string
+    public function getPrivateKey(): string
     {
-        // docker-compose .env file does not support new lines in variables so
-        // we have to modify the key https://github.com/moby/moby/issues/12997
-        return str_replace('"', '', str_replace('\n', "\n", $this->getEnv('firebird', 'DB_SSH_KEY_PRIVATE')));
+        return (string) file_get_contents('/root/.ssh/id_rsa');
+    }
+
+    public function getPublicKey(): string
+    {
+        return (string) file_get_contents('/root/.ssh/id_rsa.pub');
     }
 
     public function configTypeProvider(): array

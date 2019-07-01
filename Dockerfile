@@ -1,3 +1,4 @@
+FROM db-ex-firebird-sshproxy AS sshproxy
 FROM php:7.1-cli
 
 ARG DEBIAN_FRONTEND=noninteractive
@@ -21,5 +22,7 @@ ADD . /code
 WORKDIR /code
 RUN echo "memory_limit = -1" >> /etc/php.ini
 RUN composer install --no-interaction
+
+COPY --from=sshproxy /root/.ssh /root/.ssh
 
 CMD php ./run.php --data=/data
