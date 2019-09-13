@@ -22,7 +22,7 @@ abstract class FirebirdBaseTest extends ExtractorTest
         $this->logger = new Logger('firebird-tests');
 
         // clean the output directory
-        @array_map('unlink', glob($this->dataDir . '/out/tables/*.*'));
+        @array_map('unlink', (array) glob($this->dataDir . '/out/tables/*.*'));
     }
 
     protected function getConfig(string $driver = self::DRIVER, string $format = self::CONFIG_FORMAT_YAML): array
