@@ -1,5 +1,5 @@
 FROM db-ex-firebird-sshproxy AS sshproxy
-FROM php:7.1-cli
+FROM php:7.3-cli-stretch
 
 ARG DEBIAN_FRONTEND=noninteractive
 ARG COMPOSER_FLAGS="--prefer-dist --no-interaction"
