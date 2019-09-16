@@ -1,10 +1,9 @@
 <?php
 
 use Keboola\DbExtractor\FirebirdApplication;
-use Keboola\DbExtractor\Configuration\FirebirdConfigDefinition;
 use Keboola\DbExtractor\Exception\ApplicationException;
 use Keboola\DbExtractor\Exception\UserException;
-use Keboola\DbExtractor\Logger;
+use Keboola\DbExtractorLogger\Logger;
 use Monolog\Handler\NullHandler;
 use Symfony\Component\Yaml\Yaml;
 

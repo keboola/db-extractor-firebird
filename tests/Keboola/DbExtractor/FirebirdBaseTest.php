@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Keboola\DbExtractor\Tests;
 
 use Keboola\DbExtractor\FirebirdApplication;
-use Keboola\DbExtractor\Logger;
+use Keboola\DbExtractorLogger\Logger;
 use Keboola\DbExtractor\Test\ExtractorTest;
 use Symfony\Component\Yaml\Yaml;
 
@@ -47,7 +47,7 @@ abstract class FirebirdBaseTest extends ExtractorTest
         }
 
         $config['parameters']['db']['user'] = getenv(strtoupper($driver) . '_DB_USER');
-        $config['parameters']['db']['password'] = getenv(strtoupper($driver) . '_DB_PASSWORD');
+        $config['parameters']['db']['#password'] = getenv(strtoupper($driver) . '_DB_PASSWORD');
 
         if (false !== getenv(strtoupper($driver) . '_DB_DBNAME')) {
             $config['parameters']['db']['dbname'] = getenv(strtoupper($driver) . '_DB_DBNAME');
