@@ -17,12 +17,14 @@ class FirebirdApplication extends Application
 
     public function __construct(array $config, string $dataDir, Logger $logger, array $state = [])
     {
-        $connectionParts = explode(':', $config['parameters']['db']['dbname']);
-        if (count($connectionParts) < 1) {
-            throw new UserException('Invalid configuration for ssh tunnel');
+        if (isset($config['parameters']['db']['ssh']['enabled']) && $config['parameters']['db']['ssh']['enabled']) {
+            $connectionParts = explode(':', $config['parameters']['db']['dbname']);
+            if (count($connectionParts) < 1) {
+                throw new UserException('Invalid configuration for ssh tunnel');
+            }
+            $config['parameters']['db']['host'] = $connectionParts[0];
+            $config['parameters']['db']['port'] = self::DEFAULT_FIREBIRD_PORT;
         }
-        $config['parameters']['db']['host'] = $connectionParts[0];
-        $config['parameters']['db']['port'] = self::DEFAULT_FIREBIRD_PORT;
         $config['parameters']['data_dir'] = $dataDir;
         $config['parameters']['extractor_class'] = 'Firebird';
 
