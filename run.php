@@ -1,10 +1,10 @@
 <?php
 
 use Keboola\DbExtractor\FirebirdApplication;
-use Keboola\DbExtractor\Configuration\FirebirdConfigDefinition;
 use Keboola\DbExtractor\Exception\ApplicationException;
 use Keboola\DbExtractor\Exception\UserException;
-use Keboola\DbExtractor\Logger;
+use Keboola\DbExtractorConfig\Exception\UserException as ConfigUserException;
+use Keboola\DbExtractorLogger\Logger;
 use Monolog\Handler\NullHandler;
 use Symfony\Component\Yaml\Yaml;
 
@@ -33,7 +33,7 @@ try {
     }
     echo json_encode($app->run());
 
-} catch(UserException $e) {
+} catch(UserException|ConfigUserException $e) {
     $logger->log('error', $e->getMessage(), (array) $e->getData());
     exit(1);
 } catch(ApplicationException $e) {
