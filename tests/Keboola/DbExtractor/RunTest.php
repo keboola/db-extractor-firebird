@@ -6,35 +6,22 @@ namespace Keboola\DbExtractor\Tests;
 
 use Keboola\DbExtractor\Exception\UserException;
 use Symfony\Component\Process\Process;
-use Symfony\Component\Yaml\Yaml;
 
 class RunTest extends FirebirdBaseTest
 {
     public const ROOT_PATH = __DIR__ . '/../../..';
 
-    private function replaceConfig(array $config, string $configFormat): void
+    private function replaceConfig(array $config): void
     {
-        @unlink($this->dataDir . '/config.yml');
         @unlink($this->dataDir . '/config.json');
-        if ($configFormat === self::CONFIG_FORMAT_YAML) {
-            file_put_contents($this->dataDir . '/config.yml', Yaml::dump($config));
-            return;
-        }
-        if ($configFormat === self::CONFIG_FORMAT_JSON) {
-            file_put_contents($this->dataDir . '/config.json', json_encode($config));
-            return;
-        }
-        throw new UserException('invalid config format given to replace config');
+        file_put_contents($this->dataDir . '/config.json', json_encode($config));
     }
 
-    /**
-     * @dataProvider configTypeProvider
-     */
-    public function testTestConnectionAction(string $configFormat): void
+    public function testTestConnectionAction(): void
     {
-        $config = $this->getConfig(self::DRIVER, $configFormat);
+        $config = $this->getConfig(self::DRIVER);
         $config['action'] = 'testConnection';
-        $this->replaceConfig($config, $configFormat);
+        $this->replaceConfig($config);
 
         $process = new Process(['php', self::ROOT_PATH . '/run.php', '--data=' . $this->dataDir]);
         $process->setTimeout(300);
@@ -45,13 +32,10 @@ class RunTest extends FirebirdBaseTest
         $this->assertJson($process->getOutput());
     }
 
-    /**
-     * @dataProvider configTypeProvider
-     */
-    public function testRun(string $configFormat): void
+    public function testRun(): void
     {
-        $config = $this->getConfig(self::DRIVER, $configFormat);
-        $this->replaceConfig($config, $configFormat);
+        $config = $this->getConfig(self::DRIVER);
+        $this->replaceConfig($config);
 
         $process = new Process(['php', self::ROOT_PATH . '/run.php', '--data=' . $this->dataDir]);
         $process->setTimeout(300);
@@ -63,7 +47,7 @@ class RunTest extends FirebirdBaseTest
 
     public function testSshTestConnection(): void
     {
-        $config = $this->getConfig(self::DRIVER, self::CONFIG_FORMAT_JSON);
+        $config = $this->getConfig(self::DRIVER);
         $config['parameters']['db']['ssh'] = [
             'enabled' => true,
             'keys' => [
@@ -77,7 +61,7 @@ class RunTest extends FirebirdBaseTest
             'localPort' => '33338',
         ];
         $config['action'] = 'testConnection';
-        $this->replaceConfig($config, self::CONFIG_FORMAT_JSON);
+        $this->replaceConfig($config);
 
         $process = new Process(['php', self::ROOT_PATH . '/run.php', '--data=' . $this->dataDir]);
         $process->setTimeout(300);
