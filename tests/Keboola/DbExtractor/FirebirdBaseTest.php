@@ -25,15 +25,9 @@ abstract class FirebirdBaseTest extends ExtractorTest
         @array_map('unlink', (array) glob($this->dataDir . '/out/tables/*.*'));
     }
 
-    protected function getConfig(string $driver = self::DRIVER, string $format = self::CONFIG_FORMAT_YAML): array
+    protected function getConfig(string $driver = self::DRIVER): array
     {
-        if ($format === self::CONFIG_FORMAT_YAML) {
-            $config = Yaml::parse((string) file_get_contents($this->dataDir . '/' . $driver . '/config.yml'));
-        } elseif ($format === self::CONFIG_FORMAT_JSON) {
-            $config = json_decode((string) file_get_contents($this->dataDir . '/' . $driver . '/config.json'), true);
-        } else {
-            throw new \Exception('Invalid Test Configuration file');
-        }
+        $config = json_decode((string) file_get_contents($this->dataDir . '/' . $driver . '/config.json'), true);
 
         $config['parameters']['data_dir'] = $this->dataDir;
         $config['parameters']['extractor_class'] = 'Firebird';
@@ -69,13 +63,5 @@ abstract class FirebirdBaseTest extends ExtractorTest
     public function getPublicKey(): string
     {
         return (string) file_get_contents('/root/.ssh/id_rsa.pub');
-    }
-
-    public function configTypeProvider(): array
-    {
-        return [
-            [self::CONFIG_FORMAT_YAML],
-            [self::CONFIG_FORMAT_JSON],
-        ];
     }
 }

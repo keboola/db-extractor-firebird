@@ -6,12 +6,9 @@ namespace Keboola\DbExtractor\Tests;
 
 class FirebirdTest extends FirebirdBaseTest
 {
-    /**
-     * @dataProvider configTypeProvider
-     */
-    public function testRun(string $configFormat): void
+    public function testRun(): void
     {
-        $result = ($this->makeApplication($this->getConfig(self::DRIVER, $configFormat)))->run();
+        $result = ($this->makeApplication($this->getConfig(self::DRIVER)))->run();
         $expectedCsvFile = $this->dataDir . '/firebird/' . $result['imported'][0]['outputTable'] . '.csv';
         $expectedManifestFile = $this->dataDir . '/firebird/' . $result['imported'][0]['outputTable'] . '.csv.manifest';
         $outputCsvFile = $this->dataDir . '/out/tables/' . $result['imported'][0]['outputTable'] . '.csv';
@@ -26,7 +23,7 @@ class FirebirdTest extends FirebirdBaseTest
 
     public function testSSHRun(): void
     {
-        $config = $this->getConfig(self::DRIVER, self::CONFIG_FORMAT_JSON);
+        $config = $this->getConfig(self::DRIVER);
         $config['parameters']['db']['ssh'] = [
             'enabled' => true,
             'keys' => [
@@ -56,12 +53,9 @@ class FirebirdTest extends FirebirdBaseTest
         $this->assertEquals(file_get_contents($expectedManifestFile), file_get_contents($outputManifestFile));
     }
 
-    /**
-     * @dataProvider configTypeProvider
-     */
-    public function testTestConnection(string $configFormat): void
+    public function testTestConnection(): void
     {
-        $config = $this->getConfig(self::DRIVER, $configFormat);
+        $config = $this->getConfig(self::DRIVER);
         $config['action'] = 'testConnection';
         $app = $this->makeApplication($config);
 
@@ -71,7 +65,7 @@ class FirebirdTest extends FirebirdBaseTest
 
     public function testSSHConnection(): void
     {
-        $config = $this->getConfig(self::DRIVER, self::CONFIG_FORMAT_JSON);
+        $config = $this->getConfig(self::DRIVER);
         $config['action'] = 'testConnection';
         $config['parameters']['db']['ssh'] = [
             'enabled' => true,
