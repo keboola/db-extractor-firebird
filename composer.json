@@ -1,7 +1,7 @@
 {
     "name": "keboola/db-extractor-firebird",
     "license": "MIT",
-    "type": "Application",
+    "type": "project",
     "description": "Reads data from Mysql databases for keboola connection",
     "authors": [
         {
