@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Keboola\DbExtractor\Tests;
 
+use Keboola\DbExtractor\Extractor\Firebird;
+use Keboola\DbExtractorLogger\Logger;
+
 class FirebirdTest extends FirebirdBaseTest
 {
     public function testRun(): void
@@ -160,5 +163,48 @@ class FirebirdTest extends FirebirdBaseTest
         ];
 
         $this->assertEquals($expectedTables, $result['tables']);
+    }
+
+    /**
+     * @dataProvider simpleTableColumnsDataProvider
+     */
+    public function testGetSimplifiedPdoQuery(array $params, array $state, string $expected): void
+    {
+        $config = $this->getConfig();
+        $extractor = new Firebird($config['parameters'], $state, new Logger('mssql-extractor-test'));
+
+        $query = $extractor->simpleQuery($params['table'], $params['columns']);
+        $this->assertEquals($expected, $query);
+    }
+
+    public function simpleTableColumnsDataProvider(): array
+    {
+        return [
+            'simple table select with no column metadata' => [
+                [
+                    'table' => [
+                        'tableName' => 'test',
+                        'schema' => 'testSchema',
+                    ],
+                    'columns' => [],
+                ],
+                [],
+                'SELECT * FROM test',
+            ],
+            'simple table with 2 columns selected' => [
+                [
+                    'table' => [
+                        'tableName' => 'test',
+                        'schema' => 'testSchema',
+                    ],
+                    'columns' => [
+                        'col1',
+                        'col2',
+                    ],
+                ],
+                [],
+                'SELECT col1, col2 FROM test',
+            ],
+        ];
     }
 }

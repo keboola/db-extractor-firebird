@@ -118,7 +118,22 @@ class Firebird extends Extractor
 
     public function simpleQuery(array $table, array $columns = array()): string
     {
-        throw new UserException('This component does not yet support simple queries');
+        if (count($columns) > 0) {
+            $query = sprintf(
+                'SELECT %s FROM %s',
+                implode(', ', array_map(function ($column): string {
+                    return $column;
+                }, $columns)),
+                $table['tableName']
+            );
+        } else {
+            $query = sprintf(
+                'SELECT * FROM %s',
+                $table['tableName']
+            );
+        }
+
+        return $query;
     }
 
     private function runRetriableQuery(string $query, string $errorMessage = ''): array
