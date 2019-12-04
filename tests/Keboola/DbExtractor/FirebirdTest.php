@@ -86,4 +86,79 @@ class FirebirdTest extends FirebirdBaseTest
         $this->assertArrayHasKey('status', $result);
         $this->assertEquals('success', $result['status']);
     }
+
+    public function testGetTables(): void
+    {
+        $config = $this->getConfig(self::DRIVER);
+        $config['action'] = 'getTables';
+
+        $app = $this->makeApplication($config);
+
+        $result = $app->run();
+
+        $this->assertArrayHasKey('status', $result);
+        $this->assertArrayHasKey('tables', $result);
+        $this->assertEquals('success', $result['status']);
+        $this->assertCount(11, $result['tables']);
+
+        $expectedTables = [
+            0 => [
+                'name' => 'COUNTRY',
+                'view' => false,
+                'columns' => $this->expectedTableColumns('COUNTRY'),
+            ],
+            1 => [
+                'name' => 'JOB',
+                'view' => false,
+                'columns' => $this->expectedTableColumns('JOB'),
+            ],
+            2 => [
+                'name' => 'DEPARTMENT',
+                'view' => false,
+                'columns' => $this->expectedTableColumns('DEPARTMENT'),
+            ],
+            3 => [
+                'name' => 'EMPLOYEE',
+                'view' => false,
+                'columns' => $this->expectedTableColumns('EMPLOYEE'),
+            ],
+            4 => [
+                'name' => 'SALES',
+                'view' => false,
+                'columns' => $this->expectedTableColumns('SALES'),
+            ],
+            5 => [
+                'name' => 'PHONE_LIST',
+                'view' => false,
+                'columns' => $this->expectedTableColumns('PHONE_LIST'),
+            ],
+            6 => [
+                'name' => 'PROJECT',
+                'view' => false,
+                'columns' => $this->expectedTableColumns('PROJECT'),
+            ],
+            7 => [
+                'name' => 'EMPLOYEE_PROJECT',
+                'view' => false,
+                'columns' => $this->expectedTableColumns('EMPLOYEE_PROJECT'),
+            ],
+            8 => [
+                'name' => 'PROJ_DEPT_BUDGET',
+                'view' => false,
+                'columns' => $this->expectedTableColumns('PROJ_DEPT_BUDGET'),
+            ],
+            9 => [
+                'name' => 'SALARY_HISTORY',
+                'view' => false,
+                'columns' => $this->expectedTableColumns('SALARY_HISTORY'),
+            ],
+            10 => [
+                'name' => 'CUSTOMER',
+                'view' => false,
+                'columns' => $this->expectedTableColumns('CUSTOMER'),
+            ],
+        ];
+
+        $this->assertEquals($expectedTables, $result['tables']);
+    }
 }
