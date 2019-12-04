@@ -6,6 +6,7 @@ namespace Keboola\DbExtractor\Tests;
 
 use Keboola\DbExtractor\Extractor\Firebird;
 use Keboola\DbExtractorLogger\Logger;
+use Keboola\DbExtractorConfig\Exception\UserException as ConfigUserException;
 
 class FirebirdTest extends FirebirdBaseTest
 {
@@ -163,6 +164,25 @@ class FirebirdTest extends FirebirdBaseTest
         ];
 
         $this->assertEquals($expectedTables, $result['tables']);
+    }
+
+    public function testInvalidConfigurationQueryAndTable(): void
+    {
+        $config = $this->getConfig();
+        $config['parameters']['tables'][1]['query'] = 'SELECT 1';
+
+        $this->expectException(ConfigUserException::class);
+        $this->expectExceptionMessage('Both table and query cannot be set together.');
+        $this->makeApplication($config);
+    }
+
+    public function testInvalidConfigurationQueryNorTable(): void
+    {
+        $config = $this->getConfig(self::DRIVER);
+        unset($config['parameters']['tables'][0]['query']);
+        $this->expectException(ConfigUserException::class);
+        $this->expectExceptionMessage('One of table or query is required');
+        $app = $this->makeApplication($config);
     }
 
     /**
