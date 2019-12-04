@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Keboola\DbExtractor\Extractor;
 
 use Keboola\DbExtractor\DbRetryProxy;
+use Keboola\DbExtractor\Exception\DeadConnectionException;
 use Keboola\DbExtractor\Exception\UserException;
 
 class Firebird extends Extractor
@@ -65,18 +66,43 @@ class Firebird extends Extractor
             DbRetryProxy::DEFAULT_MAX_TRIES,
             [\PDOException::class, \ErrorException::class, \Throwable::class]
         );
-        return $retryProxy->call(function () use ($query, $errorMessage): array {
+        try {
+            return $retryProxy->call(function () use ($query): array {
+                try {
+                    $stmt = $this->db->prepare($query);
+                    $stmt->execute();
+                    return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+                } catch (\Throwable $e) {
+                    $this->tryReconnect();
+                    throw $e;
+                }
+            });
+        } catch (\Throwable $exception) {
+            throw new UserException(
+                $errorMessage . ': ' . $exception->getMessage(),
+                0,
+                $exception
+            );
+        }
+    }
+
+    private function tryReconnect(): void
+    {
+        try {
+            $this->isAlive();
+        } catch (DeadConnectionException $deadConnectionException) {
+            $reconnectionRetryProxy = new DbRetryProxy($this->logger, self::DEFAULT_MAX_TRIES, null, 1000);
             try {
-                $stmt = $this->db->prepare($query);
-                $stmt->execute();
-                return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-            } catch (\Throwable $e) {
+                $this->db = $reconnectionRetryProxy->call(function () {
+                    return $this->createConnection($this->getDbParameters());
+                });
+            } catch (\Throwable $reconnectException) {
                 throw new UserException(
-                    $errorMessage . ': ' . $e->getMessage(),
-                    0,
-                    $e
+                    'Unable to reconnect to the database: ' . $reconnectException->getMessage(),
+                    $reconnectException->getCode(),
+                    $reconnectException
                 );
             }
-        });
+        }
     }
 }
