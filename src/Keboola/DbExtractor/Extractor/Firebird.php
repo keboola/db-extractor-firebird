@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keboola\DbExtractor\Extractor;
 
+use Keboola\DbExtractor\DbRetryProxy;
 use Keboola\DbExtractor\Exception\UserException;
 
 class Firebird extends Extractor
@@ -41,7 +42,10 @@ class Firebird extends Extractor
 
     public function testConnection(): void
     {
-        $this->db->query('select 1 from rdb$database');
+        $this->runRetriableQuery(
+            'select 1 from rdb$database',
+            'Error test connection'
+        );
     }
 
     public function getTables(?array $tables = null): array
@@ -52,5 +56,27 @@ class Firebird extends Extractor
     public function simpleQuery(array $table, array $columns = array()): string
     {
         throw new UserException('This component does not yet support simple queries');
+    }
+
+    private function runRetriableQuery(string $query, string $errorMessage = ''): array
+    {
+        $retryProxy = new DbRetryProxy(
+            $this->logger,
+            DbRetryProxy::DEFAULT_MAX_TRIES,
+            [\PDOException::class, \ErrorException::class, \Throwable::class]
+        );
+        return $retryProxy->call(function () use ($query, $errorMessage): array {
+            try {
+                $stmt = $this->db->prepare($query);
+                $stmt->execute();
+                return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+            } catch (\Throwable $e) {
+                throw new UserException(
+                    $errorMessage . ': ' . $e->getMessage(),
+                    0,
+                    $e
+                );
+            }
+        });
     }
 }
