@@ -278,16 +278,16 @@
         },
         {
             "name": "keboola/php-datatypes",
-            "version": "4.2.0",
+            "version": "4.2.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/keboola/php-datatypes.git",
-                "reference": "d7c6cb963d0d9d88372c0e1dd023f1ce1dc5b829"
+                "reference": "325fe4eff3e3dfae986ebbdb769eaefd18be6086"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/keboola/php-datatypes/zipball/d7c6cb963d0d9d88372c0e1dd023f1ce1dc5b829",
-                "reference": "d7c6cb963d0d9d88372c0e1dd023f1ce1dc5b829",
+                "url": "https://api.github.com/repos/keboola/php-datatypes/zipball/325fe4eff3e3dfae986ebbdb769eaefd18be6086",
+                "reference": "325fe4eff3e3dfae986ebbdb769eaefd18be6086",
                 "shasum": ""
             },
             "require-dev": {
@@ -309,7 +309,7 @@
                     "email": "ondrej.hlavacek@keboola.com"
                 }
             ],
-            "time": "2019-06-24T11:55:04+00:00"
+            "time": "2019-12-05T14:49:18+00:00"
         },
         {
             "name": "keboola/php-utils",
