@@ -102,12 +102,14 @@ class Firebird extends Extractor
         );
         $columns = [];
         foreach ($resultColumns as $column) {
-            $key = $column['FIELD_NAME'];
-            $baseType = new GenericStorage(trim($column['FIELD_TYPE']));
+            $baseType = new GenericStorage(
+                trim($column['FIELD_TYPE']),
+                ['length' => $column['FIELD_LENGTH']]
+            );
             $columns[] = [
-                'name' => $key,
+                'name' => $column['FIELD_NAME'],
                 'type' => $baseType->getBasetype(),
-                'length' => $column['FIELD_LENGTH'],
+                'length' => $baseType->getLength(),
                 'nullable' => $column['NULLABLE'] === 'TRUE',
             ];
         }
