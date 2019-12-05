@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Keboola\DbExtractor\Extractor;
 
+use Keboola\Datatype\Definition\Exception\InvalidLengthException;
 use Keboola\Datatype\Definition\GenericStorage;
 use Keboola\DbExtractor\DbRetryProxy;
 use Keboola\DbExtractor\Exception\DeadConnectionException;
@@ -11,6 +12,10 @@ use Keboola\DbExtractor\Exception\UserException;
 
 class Firebird extends Extractor
 {
+    public const INCREMENT_TYPE_NUMERIC = 'numeric';
+    public const INCREMENT_TYPE_TIMESTAMP = 'timestamp';
+    public const INCREMENT_TYPE_DATE = 'date';
+    public const NUMERIC_BASE_TYPES = ['INTEGER', 'NUMERIC', 'FLOAT'];
 
     public function createConnection(array $params): \PDO
     {
@@ -50,6 +55,53 @@ class Firebird extends Extractor
         );
     }
 
+    public function validateIncrementalFetching(array $table, string $columnName, ?int $limit = null): void
+    {
+        $columnName = strtoupper($columnName);
+        $column = $this->getTableColumns($table['tableName'], $columnName);
+        try {
+            $datatype = new GenericStorage($column[0]['type']);
+            if (in_array($datatype->getBasetype(), self::NUMERIC_BASE_TYPES)) {
+                $this->incrementalFetching['column'] = $columnName;
+                $this->incrementalFetching['type'] = self::INCREMENT_TYPE_NUMERIC;
+            } elseif ($datatype->getBasetype() === 'TIMESTAMP') {
+                $this->incrementalFetching['column'] = $columnName;
+                $this->incrementalFetching['type'] = self::INCREMENT_TYPE_TIMESTAMP;
+            } elseif ($datatype->getBasetype() === 'DATE') {
+                $this->incrementalFetching['column'] = $columnName;
+                $this->incrementalFetching['type'] = self::INCREMENT_TYPE_DATE;
+            } else {
+                throw new UserException('invalid incremental fetching column type');
+            }
+        } catch (InvalidLengthException | UserException $exception) {
+            throw new UserException(
+                sprintf(
+                    'Column [%s] specified for incremental fetching is not a numeric or timestamp type column',
+                    $columnName
+                )
+            );
+        }
+        if ($limit) {
+            $this->incrementalFetching['limit'] = $limit;
+        }
+    }
+
+    public function getMaxOfIncrementalFetchingColumn(array $table): ?string
+    {
+        $fullsql = sprintf(
+            'SELECT MAX(%s) as %s FROM %s %s',
+            $this->incrementalFetching['column'],
+            $this->incrementalFetching['column'],
+            $table['tableName'],
+            $this->getIncrementalQueryAddon()
+        );
+        $result = $this->runRetriableQuery($fullsql, 'Fetching incremental max value error');
+        if (count($result) > 0) {
+            return (string) $result[0][$this->incrementalFetching['column']];
+        }
+        return null;
+    }
+
     public function getTables(?array $tables = null): array
     {
         $resultTables = $this->runRetriableQuery(
@@ -69,10 +121,10 @@ class Firebird extends Extractor
         return $tables;
     }
 
-    private function getTableColumns(string $table): array
+    private function getTableColumns(string $table, ?string $columnName = null): array
     {
         $table = strtoupper($table);
-        $resultColumns = $this->runRetriableQuery(
+        $sqlColumns =
             "SELECT TRIM(r.RDB\$FIELD_NAME) AS FIELD_NAME,
 				CASE f.RDB\$FIELD_TYPE
 					WHEN 261 THEN 'BLOB'
@@ -97,9 +149,13 @@ class Firebird extends Extractor
 				END AS NULLABLE
 			FROM RDB\$RELATION_FIELDS r
 				LEFT JOIN RDB\$FIELDS f ON r.RDB\$FIELD_SOURCE = f.RDB\$FIELD_NAME
-			WHERE r.RDB\$RELATION_NAME = '$table'
-			ORDER BY r.RDB\$FIELD_POSITION;"
-        );
+			WHERE r.RDB\$RELATION_NAME = '$table'";
+
+        if (!is_null($columnName)) {
+            $sqlColumns .= " AND TRIM(r.RDB\$FIELD_NAME) = '$columnName'";
+        }
+        $sqlColumns .= ' ORDER BY r.RDB$FIELD_POSITION;';
+        $resultColumns = $this->runRetriableQuery($sqlColumns);
         $columns = [];
         foreach ($resultColumns as $column) {
             $baseType = new GenericStorage(
@@ -120,16 +176,29 @@ class Firebird extends Extractor
     {
         if (count($columns) > 0) {
             $query = sprintf(
-                'SELECT %s FROM %s',
+                'SELECT %s%s FROM %s',
                 implode(', ', array_map(function ($column): string {
                     return $column;
                 }, $columns)),
+                $this->getIncrementalLimitAddon(),
                 $table['tableName']
             );
         } else {
             $query = sprintf(
-                'SELECT * FROM %s',
+                'SELECT %s* FROM %s',
+                $this->getIncrementalLimitAddon(),
                 $table['tableName']
+            );
+        }
+
+        $incrementalAddon = $this->getIncrementalQueryAddon();
+        if ($incrementalAddon) {
+            $query .= $incrementalAddon;
+        }
+        if ($this->hasIncrementalLimit()) {
+            $query .= sprintf(
+                ' ORDER BY %s',
+                $this->incrementalFetching['column']
             );
         }
 
@@ -181,5 +250,39 @@ class Firebird extends Extractor
                 );
             }
         }
+    }
+
+    private function getIncrementalQueryAddon(): ?string
+    {
+        $incrementalAddon = null;
+        if ($this->incrementalFetching) {
+            if (isset($this->state['lastFetchedRow'])) {
+                $incrementalAddon = sprintf(
+                    ' WHERE %s >= %s',
+                    $this->incrementalFetching['column'],
+                    $this->shouldQuoteComparison($this->incrementalFetching['type'])
+                        ? $this->db->quote($this->state['lastFetchedRow'])
+                        : $this->state['lastFetchedRow']
+                );
+            }
+        }
+        return $incrementalAddon;
+    }
+
+    private function getIncrementalLimitAddon(): string
+    {
+        $limitAddon = '';
+        if ($this->hasIncrementalLimit()) {
+            $limitAddon .= sprintf('FIRST %d ', $this->incrementalFetching['limit']);
+        }
+        return $limitAddon;
+    }
+
+    private function shouldQuoteComparison(string $type): bool
+    {
+        if ($type === self::INCREMENT_TYPE_NUMERIC) {
+            return false;
+        }
+        return true;
     }
 }
