@@ -111,13 +111,13 @@ abstract class FirebirdBaseTest extends ExtractorTest
                     ],
                     4 => [
                         'name'=> 'MIN_SALARY',
-                        'type'=> 'STRING',
+                        'type'=> 'INTEGER',
                         'length'=> 8,
                         'nullable'=> false,
                     ],
                     5 => [
                         'name'=> 'MAX_SALARY',
-                        'type'=> 'STRING',
+                        'type'=> 'INTEGER',
                         'length'=> 8,
                         'nullable'=> false,
                     ],
@@ -162,7 +162,7 @@ abstract class FirebirdBaseTest extends ExtractorTest
                     ],
                     4 => [
                         'name'=> 'BUDGET',
-                        'type'=> 'STRING',
+                        'type'=> 'INTEGER',
                         'length'=> 8,
                         'nullable'=> false,
                     ],
@@ -237,7 +237,7 @@ abstract class FirebirdBaseTest extends ExtractorTest
                     ],
                     9 => [
                         'name'=> 'SALARY',
-                        'type'=> 'STRING',
+                        'type'=> 'INTEGER',
                         'length'=> 8,
                         'nullable'=> false,
                     ],
@@ -324,7 +324,7 @@ abstract class FirebirdBaseTest extends ExtractorTest
                     ],
                     12 => [
                         'name'=> 'AGED',
-                        'type'=> 'STRING',
+                        'type'=> 'INTEGER',
                         'length'=> 8,
                         'nullable'=> false,
                     ],
@@ -444,7 +444,7 @@ abstract class FirebirdBaseTest extends ExtractorTest
                     ],
                     4 => [
                         'name'=> 'PROJECTED_BUDGET',
-                        'type'=> 'STRING',
+                        'type'=> 'INTEGER',
                         'length'=> 8,
                         'nullable'=> false,
                     ],
@@ -471,7 +471,7 @@ abstract class FirebirdBaseTest extends ExtractorTest
                     ],
                     3 => [
                         'name'=> 'OLD_SALARY',
-                        'type'=> 'STRING',
+                        'type'=> 'INTEGER',
                         'length'=> 8,
                         'nullable'=> false,
                     ],
