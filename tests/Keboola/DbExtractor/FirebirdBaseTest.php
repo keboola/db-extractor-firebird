@@ -66,9 +66,9 @@ abstract class FirebirdBaseTest extends ExtractorTest
         return $config;
     }
 
-    protected function makeApplication(array $config): FirebirdApplication
+    protected function makeApplication(array $config, array $state = []): FirebirdApplication
     {
-        return new FirebirdApplication($config, $this->dataDir, $this->logger);
+        return new FirebirdApplication($config, $this->dataDir, $this->logger, $state);
     }
 
     public function getPrivateKey(): string
