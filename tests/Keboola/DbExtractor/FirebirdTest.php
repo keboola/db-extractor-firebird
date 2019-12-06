@@ -239,7 +239,7 @@ class FirebirdTest extends FirebirdBaseTest
                     'columns' => [],
                 ],
                 [],
-                'SELECT * FROM test',
+                'SELECT  * FROM test',
             ],
             'simple table with 2 columns selected' => [
                 [
@@ -253,7 +253,7 @@ class FirebirdTest extends FirebirdBaseTest
                     ],
                 ],
                 [],
-                'SELECT col1, col2 FROM test',
+                'SELECT col1, col2  FROM test',
             ],
         ];
     }

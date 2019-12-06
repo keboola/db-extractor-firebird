@@ -176,7 +176,7 @@ class Firebird extends Extractor
     {
         if (count($columns) > 0) {
             $query = sprintf(
-                'SELECT %s%s FROM %s',
+                'SELECT %s %s FROM %s',
                 implode(', ', array_map(function ($column): string {
                     return $column;
                 }, $columns)),
@@ -185,7 +185,7 @@ class Firebird extends Extractor
             );
         } else {
             $query = sprintf(
-                'SELECT %s* FROM %s',
+                'SELECT %s * FROM %s',
                 $this->getIncrementalLimitAddon(),
                 $table['tableName']
             );
@@ -273,7 +273,7 @@ class Firebird extends Extractor
     {
         $limitAddon = '';
         if ($this->hasIncrementalLimit()) {
-            $limitAddon .= sprintf('FIRST %d ', $this->incrementalFetching['limit']);
+            $limitAddon .= sprintf('FIRST %d', $this->incrementalFetching['limit']);
         }
         return $limitAddon;
     }
