@@ -4,6 +4,10 @@ declare(strict_types=1);
 
 namespace Keboola\DbExtractor\Tests;
 
+use Keboola\DbExtractor\Extractor\Firebird;
+use Keboola\DbExtractorLogger\Logger;
+use Keboola\DbExtractorConfig\Exception\UserException as ConfigUserException;
+
 class FirebirdTest extends FirebirdBaseTest
 {
     public function testRun(): void
@@ -160,5 +164,67 @@ class FirebirdTest extends FirebirdBaseTest
         ];
 
         $this->assertEquals($expectedTables, $result['tables']);
+    }
+
+    public function testInvalidConfigurationQueryAndTable(): void
+    {
+        $config = $this->getConfig();
+        $config['parameters']['tables'][1]['query'] = 'SELECT 1';
+
+        $this->expectException(ConfigUserException::class);
+        $this->expectExceptionMessage('Both table and query cannot be set together.');
+        $this->makeApplication($config);
+    }
+
+    public function testInvalidConfigurationQueryNorTable(): void
+    {
+        $config = $this->getConfig(self::DRIVER);
+        unset($config['parameters']['tables'][0]['query']);
+        $this->expectException(ConfigUserException::class);
+        $this->expectExceptionMessage('One of table or query is required');
+        $app = $this->makeApplication($config);
+    }
+
+    /**
+     * @dataProvider simpleTableColumnsDataProvider
+     */
+    public function testGetSimplifiedPdoQuery(array $params, array $state, string $expected): void
+    {
+        $config = $this->getConfig();
+        $extractor = new Firebird($config['parameters'], $state, new Logger('mssql-extractor-test'));
+
+        $query = $extractor->simpleQuery($params['table'], $params['columns']);
+        $this->assertEquals($expected, $query);
+    }
+
+    public function simpleTableColumnsDataProvider(): array
+    {
+        return [
+            'simple table select with no column metadata' => [
+                [
+                    'table' => [
+                        'tableName' => 'test',
+                        'schema' => 'testSchema',
+                    ],
+                    'columns' => [],
+                ],
+                [],
+                'SELECT * FROM test',
+            ],
+            'simple table with 2 columns selected' => [
+                [
+                    'table' => [
+                        'tableName' => 'test',
+                        'schema' => 'testSchema',
+                    ],
+                    'columns' => [
+                        'col1',
+                        'col2',
+                    ],
+                ],
+                [],
+                'SELECT col1, col2 FROM test',
+            ],
+        ];
     }
 }
