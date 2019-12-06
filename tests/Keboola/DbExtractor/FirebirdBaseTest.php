@@ -66,9 +66,9 @@ abstract class FirebirdBaseTest extends ExtractorTest
         return $config;
     }
 
-    protected function makeApplication(array $config): FirebirdApplication
+    protected function makeApplication(array $config, array $state = []): FirebirdApplication
     {
-        return new FirebirdApplication($config, $this->dataDir, $this->logger);
+        return new FirebirdApplication($config, $this->dataDir, $this->logger, $state);
     }
 
     public function getPrivateKey(): string
@@ -577,6 +577,42 @@ abstract class FirebirdBaseTest extends ExtractorTest
                         'type'=> 'STRING',
                         'length'=> 1,
                         'nullable'=> false,
+                    ],
+                ];
+            case 'AUTO_INCREMENT_TIMESTAMP':
+                return [
+                    0 => [
+                        'name' => 'ID',
+                        'type' => 'INTEGER',
+                        'length' => '4',
+                        'nullable' => false,
+
+                    ],
+                    1 => [
+                        'name' => 'NAME',
+                        'type' => 'STRING',
+                        'length' => '255',
+                        'nullable' => false,
+                    ],
+                    2 => [
+                        'name' => 'SOMEDECIMAL',
+                        'type' => 'FLOAT',
+                        'length' => '4',
+                        'nullable' => false,
+
+                    ],
+                    3 => [
+                        'name' => 'SOMETIMESTAMP',
+                        'type' => 'TIMESTAMP',
+                        'length' => '8',
+                        'nullable' => false,
+
+                    ],
+                    4 => [
+                        'name' => 'SOMEDATE',
+                        'type' => 'DATE',
+                        'length' => '4',
+                        'nullable' => false,
                     ],
                 ];
             default:

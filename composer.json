@@ -12,7 +12,7 @@
     "require": {
         "php": "^7.3",
         "ext-PDO": "*",
-        "keboola/db-extractor-common": "^11.0",
+        "keboola/db-extractor-common": "^12.0",
         "keboola/db-extractor-config": "^1.2",
         "keboola/db-extractor-logger": "^1.0"
     },

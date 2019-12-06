@@ -128,7 +128,7 @@ class FirebirdTest extends FirebirdBaseTest
         $this->assertArrayHasKey('status', $result);
         $this->assertArrayHasKey('tables', $result);
         $this->assertEquals('success', $result['status']);
-        $this->assertCount(11, $result['tables']);
+        $this->assertCount(12, $result['tables']);
 
         $expectedTables = [
             0 => [
@@ -186,6 +186,11 @@ class FirebirdTest extends FirebirdBaseTest
                 'view' => false,
                 'columns' => $this->expectedTableColumns('CUSTOMER'),
             ],
+            11 => [
+                'name' => 'AUTO_INCREMENT_TIMESTAMP',
+                'view' => false,
+                'columns' => $this->expectedTableColumns('AUTO_INCREMENT_TIMESTAMP'),
+            ],
         ];
 
         $this->assertEquals($expectedTables, $result['tables']);
@@ -234,7 +239,7 @@ class FirebirdTest extends FirebirdBaseTest
                     'columns' => [],
                 ],
                 [],
-                'SELECT * FROM test',
+                'SELECT  * FROM test',
             ],
             'simple table with 2 columns selected' => [
                 [
@@ -248,7 +253,7 @@ class FirebirdTest extends FirebirdBaseTest
                     ],
                 ],
                 [],
-                'SELECT col1, col2 FROM test',
+                'SELECT col1, col2  FROM test',
             ],
         ];
     }
