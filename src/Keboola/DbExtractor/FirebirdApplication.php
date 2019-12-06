@@ -47,7 +47,7 @@ class FirebirdApplication extends Application
             } else {
                 $this->config = new Config(
                     $config,
-                    new ConfigDefinition($dbNode, null, new FirebirdTablesNode())
+                    new ConfigDefinition($dbNode)
                 );
             }
         } catch (ConfigUserException $e) {
