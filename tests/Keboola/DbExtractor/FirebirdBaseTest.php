@@ -29,6 +29,22 @@ abstract class FirebirdBaseTest extends ExtractorTest
     {
         $config = json_decode((string) file_get_contents($this->dataDir . '/' . $driver . '/config.json'), true);
 
+        $config = $this->getConfigValues($driver, $config);
+
+        return $config;
+    }
+
+    protected function getConfigRow(string $driver): array
+    {
+        $config = json_decode((string) file_get_contents($this->dataDir . '/' . $driver . '/configRow.json'), true);
+
+        $config = $this->getConfigValues($driver, $config);
+
+        return $config;
+    }
+
+    private function getConfigValues(string $driver, array $config): array
+    {
         $config['parameters']['data_dir'] = $this->dataDir;
         $config['parameters']['extractor_class'] = 'Firebird';
 

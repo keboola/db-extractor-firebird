@@ -4,9 +4,9 @@ declare(strict_types=1);
 
 namespace Keboola\DbExtractor\Tests;
 
+use Keboola\DbExtractor\Exception\UserException;
 use Keboola\DbExtractor\Extractor\Firebird;
 use Keboola\DbExtractorLogger\Logger;
-use Keboola\DbExtractorConfig\Exception\UserException as ConfigUserException;
 
 class FirebirdTest extends FirebirdBaseTest
 {
@@ -17,6 +17,21 @@ class FirebirdTest extends FirebirdBaseTest
         $expectedManifestFile = $this->dataDir . '/firebird/' . $result['imported'][0]['outputTable'] . '.csv.manifest';
         $outputCsvFile = $this->dataDir . '/out/tables/' . $result['imported'][0]['outputTable'] . '.csv';
         $outputManifestFile = $this->dataDir . '/out/tables/' . $result['imported'][0]['outputTable'] . '.csv.manifest';
+
+        $this->assertEquals('success', $result['status']);
+        $this->assertFileExists($outputCsvFile);
+        $this->assertFileExists($outputManifestFile);
+        $this->assertEquals(file_get_contents($expectedCsvFile), file_get_contents($outputCsvFile));
+        $this->assertEquals(file_get_contents($expectedManifestFile), file_get_contents($outputManifestFile));
+    }
+
+    public function testRowRun(): void
+    {
+        $result = ($this->makeApplication($this->getConfigRow(self::DRIVER)))->run();
+        $expectedCsvFile = $this->dataDir . '/firebird/' . $result['imported']['outputTable'] . '.csv';
+        $expectedManifestFile = $this->dataDir . '/firebird/' . $result['imported']['outputTable'] . '.csv.manifest';
+        $outputCsvFile = $this->dataDir . '/out/tables/' . $result['imported']['outputTable'] . '.csv';
+        $outputManifestFile = $this->dataDir . '/out/tables/' . $result['imported']['outputTable'] . '.csv.manifest';
 
         $this->assertEquals('success', $result['status']);
         $this->assertFileExists($outputCsvFile);
@@ -60,6 +75,16 @@ class FirebirdTest extends FirebirdBaseTest
     public function testTestConnection(): void
     {
         $config = $this->getConfig(self::DRIVER);
+        $config['action'] = 'testConnection';
+        $app = $this->makeApplication($config);
+
+        $result = $app->run();
+        $this->assertEquals('success', $result['status']);
+    }
+
+    public function testTestRowConnection(): void
+    {
+        $config = $this->getConfigRow(self::DRIVER);
         $config['action'] = 'testConnection';
         $app = $this->makeApplication($config);
 
@@ -171,7 +196,7 @@ class FirebirdTest extends FirebirdBaseTest
         $config = $this->getConfig();
         $config['parameters']['tables'][1]['query'] = 'SELECT 1';
 
-        $this->expectException(ConfigUserException::class);
+        $this->expectException(UserException::class);
         $this->expectExceptionMessage('Both table and query cannot be set together.');
         $this->makeApplication($config);
     }
@@ -180,7 +205,7 @@ class FirebirdTest extends FirebirdBaseTest
     {
         $config = $this->getConfig(self::DRIVER);
         unset($config['parameters']['tables'][0]['query']);
-        $this->expectException(ConfigUserException::class);
+        $this->expectException(UserException::class);
         $this->expectExceptionMessage('One of table or query is required');
         $app = $this->makeApplication($config);
     }

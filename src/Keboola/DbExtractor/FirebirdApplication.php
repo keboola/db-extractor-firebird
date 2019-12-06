@@ -8,8 +8,11 @@ use Keboola\DbExtractor\Configuration\NodeDefinition\FirebirdDbNode;
 use Keboola\DbExtractor\Configuration\NodeDefinition\FirebirdTablesNode;
 use Keboola\DbExtractor\Exception\UserException;
 use Keboola\DbExtractorConfig\Config;
+use Keboola\DbExtractorConfig\Configuration\ActionConfigRowDefinition;
 use Keboola\DbExtractorConfig\Configuration\ConfigDefinition;
+use Keboola\DbExtractorConfig\Configuration\ConfigRowDefinition;
 use Keboola\DbExtractorLogger\Logger;
+use Keboola\DbExtractorConfig\Exception\UserException as ConfigUserException;
 
 class FirebirdApplication extends Application
 {
@@ -33,6 +36,22 @@ class FirebirdApplication extends Application
 
     public function buildConfig(array $config): void
     {
-        $this->config = new Config($config, new ConfigDefinition(new FirebirdDbNode(), null, new FirebirdTablesNode()));
+        $dbNode = new FirebirdDbNode();
+        try {
+            if (isset($config['parameters']['table']) || isset($config['parameters']['query'])) {
+                if ($this['action'] === 'run') {
+                    $this->config = new Config($config, new ConfigRowDefinition($dbNode));
+                } else {
+                    $this->config = new Config($config, new ActionConfigRowDefinition($dbNode));
+                }
+            } else {
+                $this->config = new Config(
+                    $config,
+                    new ConfigDefinition($dbNode, null, new FirebirdTablesNode())
+                );
+            }
+        } catch (ConfigUserException $e) {
+            throw new UserException($e->getMessage(), $e->getCode(), $e);
+        }
     }
 }

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "39a5445b3148d7d0c0a4bac7ed25e3c7",
+    "content-hash": "ea6fbf4f7f5e7e547c1e400b381b8dc7",
     "packages": [
         {
             "name": "keboola/csv",
@@ -113,16 +113,16 @@
         },
         {
             "name": "keboola/db-extractor-config",
-            "version": "1.1.0",
+            "version": "1.2.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/keboola/db-extractor-config.git",
-                "reference": "58ecc96e387ede75b31bf90ce7c0abcd5f49e610"
+                "reference": "768ce2728b71a72e4b5bb13ef95d5a2fa58aaad1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/keboola/db-extractor-config/zipball/58ecc96e387ede75b31bf90ce7c0abcd5f49e610",
-                "reference": "58ecc96e387ede75b31bf90ce7c0abcd5f49e610",
+                "url": "https://api.github.com/repos/keboola/db-extractor-config/zipball/768ce2728b71a72e4b5bb13ef95d5a2fa58aaad1",
+                "reference": "768ce2728b71a72e4b5bb13ef95d5a2fa58aaad1",
                 "shasum": ""
             },
             "require": {
@@ -145,7 +145,7 @@
                 "MIT"
             ],
             "description": "Config definition for database extractor",
-            "time": "2019-09-20T12:49:58+00:00"
+            "time": "2019-10-02T07:21:39+00:00"
         },
         {
             "name": "keboola/db-extractor-logger",
