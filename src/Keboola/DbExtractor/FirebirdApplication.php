@@ -38,7 +38,7 @@ class FirebirdApplication extends Application
     {
         $dbNode = new FirebirdDbNode();
         try {
-            if (isset($config['parameters']['table']) || isset($config['parameters']['query'])) {
+            if ($this->isRowConfiguration($config)) {
                 if ($this['action'] === 'run') {
                     $this->config = new Config($config, new ConfigRowDefinition($dbNode));
                 } else {
