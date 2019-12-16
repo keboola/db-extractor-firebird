@@ -1,6 +1,6 @@
 version: "2"
 services:
-  app:
+  app: &app
     build: .
     image: keboola/ex-db-firebird
     working_dir: /code
@@ -14,18 +14,10 @@ services:
       - sshproxy
 
   dev:
-    image: keboola/ex-db-firebird
+    <<: *app
+    image: keboola/ex-db-firebird-dev
     volumes:
       - ./:/code
-    working_dir: /code
-    command: composer ci
-    environment:
-      FIREBIRD_DB_DBNAME: firebird:/usr/local/firebird/examples/empbuild/employee.fdb
-      FIREBIRD_DB_USER: SYSDBA
-      FIREBIRD_DB_PASSWORD: pass
-    links:
-      - firebird
-      - sshproxy
 
   firebird:
     image: jacobalberty/firebird:2.5-sc
