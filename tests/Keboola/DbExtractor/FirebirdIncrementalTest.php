@@ -8,8 +8,7 @@ use Keboola\DbExtractor\Exception\UserException;
 
 class FirebirdIncrementalTest extends FirebirdBaseTest
 {
-    /** @var \PDO $connection */
-    private $connection;
+    private \PDO $connection;
 
     public function setUp(): void
     {
