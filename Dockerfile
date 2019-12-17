@@ -1,4 +1,4 @@
-FROM db-ex-firebird-sshproxy AS sshproxy
+FROM keboola/db-component-ssh-proxy:latest AS sshproxy
 FROM php:7.4-cli
 
 ARG DEBIAN_FRONTEND=noninteractive
