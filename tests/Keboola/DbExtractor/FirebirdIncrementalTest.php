@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Keboola\DbExtractor\Tests;
 
-
 class FirebirdIncrementalTest extends FirebirdBaseTest
 {
 
