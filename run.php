@@ -6,6 +6,8 @@ use Keboola\DbExtractor\Exception\UserException;
 use Keboola\DbExtractorConfig\Exception\UserException as ConfigUserException;
 use Keboola\DbExtractorLogger\Logger;
 use Monolog\Handler\NullHandler;
+use Symfony\Component\Serializer\Encoder\JsonEncode;
+use Symfony\Component\Serializer\Encoder\JsonEncoder;
 
 require_once(__DIR__ . "/vendor/autoload.php");
 
@@ -25,11 +27,24 @@ try {
 
     $app = new FirebirdApplication($config, $arguments['data'], $logger);
 
+    $runAction = true;
     if ($app['action'] !== 'run') {
         $app['logger']->setHandlers([new NullHandler(Logger::INFO)]);
+        $runAction = false;
     }
-    echo json_encode($app->run());
 
+    $result = $app->run();
+
+    if (!$runAction) {
+        echo json_encode($result);
+    } else {
+        if (!empty($result['state'])) {
+            // write state
+            $outputStateFile = $arguments["data"] . '/out/state.json';
+            $jsonEncode = new JsonEncode();
+            file_put_contents($outputStateFile, $jsonEncode->encode($result['state'], JsonEncoder::FORMAT));
+        }
+    }
 } catch(UserException|ConfigUserException $e) {
     $logger->log('error', $e->getMessage(), (array) $e->getData());
     exit(1);
