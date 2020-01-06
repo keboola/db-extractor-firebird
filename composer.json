@@ -14,7 +14,8 @@
         "ext-PDO": "*",
         "keboola/db-extractor-common": "^12.1",
         "keboola/db-extractor-config": "^1.2",
-        "keboola/db-extractor-logger": "^1.0"
+        "keboola/db-extractor-logger": "^1.0",
+        "keboola/db-extractor-table-format": "^1.1"
     },
     "require-dev": {
         "jakub-onderka/php-parallel-lint": "^1.0",

@@ -9,6 +9,8 @@ use Keboola\Datatype\Definition\GenericStorage;
 use Keboola\DbExtractor\DbRetryProxy;
 use Keboola\DbExtractor\Exception\DeadConnectionException;
 use Keboola\DbExtractor\Exception\UserException;
+use Keboola\DbExtractor\TableResultFormat\Table;
+use Keboola\DbExtractor\TableResultFormat\TableColumn;
 
 class Firebird extends Extractor
 {
@@ -59,6 +61,10 @@ class Firebird extends Extractor
     {
         $columnName = strtoupper($columnName);
         $column = $this->getTableColumns($table['tableName'], $columnName);
+        array_walk($column, function (TableColumn &$item): void {
+            $item = $item->getOutput();
+        });
+
         try {
             $datatype = new GenericStorage($column[0]['type']);
             if (in_array($datatype->getBasetype(), self::NUMERIC_BASE_TYPES)) {
@@ -112,11 +118,14 @@ class Firebird extends Extractor
         );
         $tables = [];
         foreach ($resultTables as $table) {
-            $tables[] = [
-                'name' => $table['NAME'],
-                'view' => $table['VIEW_CASE'] === 'TRUE',
-                'columns' => $this->getTableColumns($table['NAME']),
-            ];
+            $outputTable = new Table();
+            $outputTable
+                ->setSchema('')
+                ->setName($table['NAME'])
+                ->setType($table['VIEW_CASE'] === 'TRUE' ? 'view' : 'table')
+                ->setColumns($this->getTableColumns($table['NAME']));
+
+            $tables[] = $outputTable->getOutput();
         }
         return $tables;
     }
@@ -162,12 +171,13 @@ class Firebird extends Extractor
                 trim($column['FIELD_TYPE']),
                 ['length' => $column['FIELD_LENGTH']]
             );
-            $columns[] = [
-                'name' => $column['FIELD_NAME'],
-                'type' => $baseType->getBasetype(),
-                'length' => $baseType->getLength(),
-                'nullable' => $column['NULLABLE'] === 'TRUE',
-            ];
+            $tableColumn = new TableColumn();
+            $tableColumn
+                ->setName((string) $column['FIELD_NAME'])
+                ->setType((string) $baseType->getBasetype())
+                ->setLength((string) $baseType->getLength())
+                ->setNullable($column['NULLABLE'] === 'TRUE');
+            $columns[] = $tableColumn;
         }
         return $columns;
     }
