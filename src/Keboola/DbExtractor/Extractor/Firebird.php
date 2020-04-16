@@ -41,6 +41,7 @@ class Firebird extends Extractor
             $params['dbname']
         );
 
+        $this->logger->info(sprintf('Connecting to "%s"', $dsn));
         $pdo = new \PDO($dsn, $params['user'], $params['#password'], $options);
 
         return $pdo;
