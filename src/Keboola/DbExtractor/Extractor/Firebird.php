@@ -35,7 +35,9 @@ class Firebird extends Extractor
         }
 
         $dsn = sprintf(
-            'firebird:dbname=%s',
+            'firebird:host=%s;port=%s;dbname=%s',
+            $params['host'],
+            $params['port'],
             $params['dbname']
         );
 
