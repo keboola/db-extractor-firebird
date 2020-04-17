@@ -34,12 +34,13 @@ class Firebird extends Extractor
             }
         }
 
-        $dsn = sprintf(
-            'firebird:host=%s;port=%s;dbname=%s',
-            $params['host'],
-            $params['port'],
-            $params['dbname']
-        );
+        $dsn = sprintf('firebird:dbname=%s', $params['dbname']);
+        if (isset($params['host'])) {
+            $dsn .= sprintf(';host=%s', $params['host']);
+        }
+        if (isset($params['port'])) {
+            $dsn .= sprintf(';port=%s', $params['port']);
+        }
 
         $this->logger->info(sprintf('Connecting to "%s"', $dsn));
         $pdo = new \PDO($dsn, $params['user'], $params['#password'], $options);
