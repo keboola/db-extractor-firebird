@@ -33,14 +33,13 @@ class Firebird extends Extractor
                 throw new UserException(sprintf('Parameter %s is missing.', $r));
             }
         }
+        $dbName = $params['dbname'];
+        if (isset($params['ssh']['enabled']) && $params['ssh']['enabled']) {
+            preg_match('/([^\/]+)\/?([0-9]+)?:(.*)/', $params['dbname'], $connectionParts);
+            $dbName = sprintf('%s/%s:%s', $params['host'], $params['port'], $connectionParts[3]);
+        }
 
-        $dsn = sprintf('firebird:dbname=%s', $params['dbname']);
-        if (isset($params['host'])) {
-            $dsn .= sprintf(';host=%s', $params['host']);
-        }
-        if (isset($params['port'])) {
-            $dsn .= sprintf(';port=%s', $params['port']);
-        }
+        $dsn = sprintf('firebird:dbname=%s', $dbName);
 
         $this->logger->info(sprintf('Connecting to "%s"', $dsn));
         $pdo = new \PDO($dsn, $params['user'], $params['#password'], $options);
