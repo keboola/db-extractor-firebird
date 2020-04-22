@@ -2,7 +2,6 @@
 
 [![Build Status](https://travis-ci.org/keboola/db-extractor-firebird.svg?branch=master)](https://travis-ci.org/keboola/db-extractor-firebird)
 
-
 ## Example configuration
 
 
@@ -24,3 +23,13 @@
         }
       ]
     }
+
+Additionally, the `dbname` can contain `charset`, `role` and `dialect` [parameters](https://www.php.net/manual/en/ref.pdo-firebird.connection.php).
+
+Valid example database names:
+
+- `my-server:D:\fdb\EMPLOYEE.FDB`
+- `my-server:D:\fdb\EMPLOYEE.FDB;role=MY_ROLE`
+- `localhost/3050:D:\fdb\EMPLOYEE.FDB`
+- `123.123.123.123/3210:/path/to/my.fdb`
+- `localhost:/path/to/your/database.fdb;role=MY_ROLE;charset=utf-8`
