@@ -70,7 +70,10 @@ class RunTest extends FirebirdBaseTest
 
         $this->assertEquals(0, $process->getExitCode());
         $this->assertStringContainsString('Creating SSH tunnel to \'sshproxy\'', $process->getOutput());
-        $this->assertStringContainsString('host=127.0.0.1;port=33339', $process->getOutput());
+        $this->assertStringContainsString(
+            'Connecting to "firebird:dbname=127.0.0.1/33339:/usr/local/firebird/examples/empbuild/employee.fdb"',
+            $process->getOutput()
+        );
     }
 
     public function testSshTestConnection(): void
