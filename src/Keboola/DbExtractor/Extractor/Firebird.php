@@ -35,7 +35,7 @@ class Firebird extends Extractor
         }
         $dbName = $params['dbname'];
         if (isset($params['ssh']['enabled']) && $params['ssh']['enabled']) {
-            preg_match('/([^\/]+)\/?([0-9]+)?:(.*)/', $params['dbname'], $connectionParts);
+            preg_match('/([^:]+?)\/?([0-9]+)?:(.*)/', $params['dbname'], $connectionParts);
             $dbName = sprintf('%s/%s:%s', $params['host'], $params['port'], $connectionParts[3]);
         }
 

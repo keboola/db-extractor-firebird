@@ -21,7 +21,7 @@ class FirebirdApplication extends Application
     public function __construct(array $config, string $dataDir, Logger $logger, array $state = [])
     {
         if (isset($config['parameters']['db']['ssh']['enabled']) && $config['parameters']['db']['ssh']['enabled']) {
-            preg_match('/([^\/]+)\/?([0-9]+)?:(.*)/', $config['parameters']['db']['dbname'], $connectionParts);
+            preg_match('/([^:]+?)\/?([0-9]+)?:(.*)/', $config['parameters']['db']['dbname'], $connectionParts);
             if (count($connectionParts) < 4) {
                 throw new UserException('Invalid configuration for ssh tunnel');
             }
