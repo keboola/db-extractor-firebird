@@ -1,7 +1,5 @@
 # Firebird DB Extractor
 
-[![Build Status](https://travis-ci.org/keboola/db-extractor-firebird.svg?branch=master)](https://travis-ci.org/keboola/db-extractor-firebird)
-
 ## Example configuration
 
 
