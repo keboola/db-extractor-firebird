@@ -5,7 +5,8 @@ use Keboola\DbExtractor\Exception\ApplicationException;
 use Keboola\DbExtractor\Exception\UserException;
 use Keboola\DbExtractorConfig\Exception\UserException as ConfigUserException;
 use Keboola\DbExtractorLogger\Logger;
-use Monolog\Handler\NullHandler;
+use Monolog\Formatter\LineFormatter;
+use Monolog\Handler\StreamHandler;
 use Symfony\Component\Serializer\Encoder\JsonEncode;
 use Symfony\Component\Serializer\Encoder\JsonEncoder;
 use Symfony\Component\Serializer\Encoder\JsonDecode;
@@ -41,7 +42,11 @@ try {
 
     $runAction = true;
     if ($app['action'] !== 'run') {
-        $app['logger']->setHandlers([new NullHandler(Logger::INFO)]);
+        $logHandler = new StreamHandler('php://stderr');
+        $logHandler->setBubble(false);
+        $logHandler->setLevel(Logger::ERROR);
+        $logHandler->setFormatter(new LineFormatter("%message%"));
+        $app['logger']->setHandlers([$logHandler]);
         $runAction = false;
     }
 

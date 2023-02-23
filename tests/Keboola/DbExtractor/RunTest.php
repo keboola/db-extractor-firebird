@@ -33,6 +33,24 @@ class RunTest extends FirebirdBaseTest
         $this->assertJson($process->getOutput());
     }
 
+    public function testTestConnectionWrongDbNameAction(): void
+    {
+        $config = $this->getConfig(self::DRIVER);
+        $config['action'] = 'testConnection';
+        $config['parameters']['db']['dbname'] = 'firebird/3050:d:/usr/local/firebird/examples/empbuild/employee.fdb';
+        $this->replaceConfig($config);
+
+        $process = new Process(['php', self::ROOT_PATH . '/run.php', '--data=' . $this->dataDir]);
+        $process->setTimeout(300);
+        $process->run();
+
+        $this->assertEquals(
+            "Connection failed: 'Error connecting to DB: SQLSTATE[HY000] [335544375] unavailable database'",
+            $process->getErrorOutput()
+        );
+        $this->assertEquals(1, $process->getExitCode());
+    }
+
     public function testRun(): void
     {
         $config = $this->getConfig(self::DRIVER);
