@@ -31,3 +31,7 @@ Valid example database names:
 - `localhost/3050:D:\fdb\EMPLOYEE.FDB`
 - `123.123.123.123/3210:/path/to/my.fdb`
 - `localhost:/path/to/your/database.fdb;role=MY_ROLE;charset=utf-8`
+
+## License
+
+MIT licensed, see [LICENSE](./LICENSE) file.
